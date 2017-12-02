@@ -26,6 +26,8 @@ void Application::InitVariables(void)
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 	clockMove = m_pSystem->GenClock();
 
+	m_noiseGen = ObstacleGenerator::GetInstance();
+
 }
 void Application::Update(void)
 {
@@ -50,6 +52,26 @@ void Application::Update(void)
 		for (int i = -50; i < 50; i += 2)
 		{
 			m_pMyMeshMngr->AddConeToRenderList(glm::translate(vector3(i, 0.0f, j)));
+		}
+	}
+
+
+	//generate noise/obstacles
+	m_noiseGen->GenerateObstacles(3, 3);
+
+	//iterate through each row of every slice, spawn cubes
+	for (int k = 10; k > -10; k--)
+	{
+		//bottom row to top row
+		for (int j = 2; j < 5; j++)
+		{
+			for (int i = -1; i < 2; i++)
+			{
+				if (m_noiseGen->GetLanes(0) > 0) //
+				{
+					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(i, j, k)));
+				}
+			}
 		}
 	}
 }
