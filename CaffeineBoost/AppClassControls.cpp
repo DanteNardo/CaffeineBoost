@@ -122,7 +122,8 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 			}
 		}
 		break;
-	
+	case sf::Keyboard::U:
+		m_pCamera->collide(vector3(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z + 1));
 	}
 
 	//gui
@@ -379,8 +380,8 @@ void Application::ProcessKeyboard(void)
 	This is used for things that are continuously happening,
 	for discreet on/off use ProcessKeyboardPressed/Released
 	*/
-
-	float fDelta = m_pSystem->GetDeltaTime(gui.m_nClock);
+	static unsigned int clock = m_pSystem->GenClock();
+	float fDelta = m_pSystem->GetDeltaTime(clock);
 
 #pragma region Camera Position
 	float fSpeed = 0.1f;
@@ -399,6 +400,12 @@ void Application::ProcessKeyboard(void)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		m_pCamera->moveSideways(false, fDelta);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+		m_pCamera->jump();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+		m_pCamera->fall(fDelta);
 	}
 		
 		

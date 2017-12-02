@@ -1,5 +1,7 @@
 #include "AppClass.h"
 using namespace Simplex;
+
+unsigned int clockMove;
 void Application::InitVariables(void)
 {
 	////Change this to your name and email
@@ -22,11 +24,19 @@ void Application::InitVariables(void)
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
+	clockMove = m_pSystem->GenClock();
+
 }
 void Application::Update(void)
 {
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
+
+	float fDelta = m_pSystem->GetDeltaTime(clockMove);
+
+	m_pCamera->moveForward(fDelta);
+
+	m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
 	ArcBall();

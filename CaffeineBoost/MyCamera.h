@@ -253,6 +253,10 @@ public:
 
 	float JumpImpulse();
 
+	//method to handle collisions
+	//takes in the center of the colliding object
+	void collide(vector3 position);
+
 };
 
 } //namespace Simplex

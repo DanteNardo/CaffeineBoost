@@ -4,6 +4,8 @@ using namespace Simplex;
 //Accessors
 void Simplex::MyCamera::SetPosition(vector3 a_v3Position) { m_v3Position = a_v3Position; }
 
+vector3 Simplex::MyCamera::GetPosition() { return m_v3Position; }
+
 void Simplex::MyCamera::SetTarget(vector3 a_v3Target) { m_v3Target = a_v3Target; }
 
 void Simplex::MyCamera::SetUp(vector3 a_v3Up) { m_v3Up = a_v3Up; }
@@ -24,6 +26,11 @@ matrix4 Simplex::MyCamera::GetProjectionMatrix(void) { return m_m4Projection; }
 
 matrix4 Simplex::MyCamera::GetViewMatrix(void) { CalculateViewMatrix(); return m_m4View; }
 
+float drag = 0.9f;
+
+float acceleration = 3;
+
+float initHeight;
 
 
 Simplex::MyCamera::MyCamera()
@@ -79,7 +86,7 @@ void Simplex::MyCamera::Init(void)
 	//sets values of all player movement variables
 
 	//the speed the object moves forwards at
-	velocity = 1;
+	velocity = 0;
 
 	//the speed the object moves sideways at
 	sideSpeed = 1;
@@ -97,7 +104,15 @@ void Simplex::MyCamera::Init(void)
 	verticalDelta = -3;
 
 	//maximum fall speed
-	terminalVelocity = -9.8;
+	terminalVelocity = -9.8f;
+
+	//jump height
+	jumpImpulse = 1;
+
+	//height to check against for falling
+	initHeight = 3;
+
+	
 }
 
 void Simplex::MyCamera::Release(void)
@@ -183,11 +198,15 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 void Simplex::MyCamera::moveForward(float deltaTime)
 {
 
+	speedUp(deltaTime);
+
+	slowDown(deltaTime);
+
 	//moves camera position by velocity amount
-	SetPosition(m_v3Position + vector3(0, 0, -velocity));
+	SetPosition(m_v3Position + vector3(0, 0, -velocity * deltaTime));
 
 	//moves target so camera doesn't turn
-	SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity)));
+	SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity* deltaTime)));
 }
 
 void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
@@ -212,20 +231,38 @@ void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
 	}
 }
 
+
+//applys a drag force to slow down
 void Simplex::MyCamera::slowDown(float deltaTime)
 {
+	velocity = velocity * drag;
 }
 
+//speeds up based on an acceleration
 void Simplex::MyCamera::speedUp(float deltaTime)
 {
+	velocity += acceleration;
 }
 
 void Simplex::MyCamera::jump()
 {
+	if (m_v3Position.y = initHeight) {
+
+		verticalVelocity = jumpImpulse;
+
+	}
 }
 
 void Simplex::MyCamera::fall(float deltaTime)
 {
+ 	SetPosition(vector3(m_v3Position.x, m_v3Position.y + verticalVelocity, m_v3Position.z));
+	//moves target so camera doesn't turn
+	SetTarget(vector3(m_v3Target.x, m_v3Position.y, m_v3Target.z));
+	verticalVelocity = verticalVelocity - (3.0f * deltaTime);
+	if (m_v3Position.y < initHeight) {
+		SetPosition(vector3(m_v3Position.x, initHeight, m_v3Position.z));
+		SetTarget(vector3(m_v3Target.x, initHeight, m_v3Target.z));
+	}
 }
 
 //getters for player movement variables
@@ -253,3 +290,11 @@ float Simplex::MyCamera::TerminalVelocity(){	return terminalVelocity;}
 
 //returns how much verticalvelocity jump adds
 float Simplex::MyCamera::JumpImpulse(){	return jumpImpulse;}
+
+void Simplex::MyCamera::collide(vector3 position)
+{
+
+	float difference = position.z - m_v3Position.z;
+	velocity = -difference * velocity;
+
+}
