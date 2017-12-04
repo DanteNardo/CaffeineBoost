@@ -54,7 +54,7 @@
     <ClCompile Include="MyCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ObstacleGenerator.cpp">
+    <ClCompile Include="ProceduralGeneration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="MyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObstacleGenerator.h">
+    <ClInclude Include="ProceduralGeneration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
