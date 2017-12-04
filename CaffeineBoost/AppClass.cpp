@@ -26,7 +26,6 @@ void Application::InitVariables(void)
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 	clockMove = m_pSystem->GenClock();
 
-
 	m_noiseGen = new ProceduralGeneration();
 
 }
@@ -37,9 +36,9 @@ void Application::Update(void)
 
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
-	//m_pCamera->moveForward(fDelta);
+	m_pCamera->moveForward(fDelta);
 
-	//m_pCamera->fall(fDelta);
+	m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
 	ArcBall();
@@ -57,29 +56,20 @@ void Application::Update(void)
 	}
 
 
-	//generate noise/obstacles
-	//m_noiseGen->GenerateObstacles(3, 3);
-
-
 	//iterate through each row of every slice, spawn cubes
+	Batch * b = m_noiseGen->GetBatch();
+	for (int i = 0; i < b->data.size(); i++) {
+		for (int j = 0; j <= 1; j++) {
+			for (int k = 0; k <= 2; k++) {
 
-		//bottom row to top row
-
-		//for (int j = 2; j < 5; j++)
-		//{
-			//for (int i = -1; i < 2; i++)
-			//{
-		Batch * b = m_noiseGen->GetBatch();
-		for (int i = 0; i < b->data.size(); i++) {
-			for (int j = 0; j <= 1; j++) {
-				for (int k = 0; k <= 2; k++) {
-					if (*(b->data[j+k]) == 1)
-					{
-						m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(k - 1, j + 2, i)));
-					}
+				//allow obstacle spawning where procedural gen results in 1
+				if (*(b->data[j+k]) == 1)
+				{
+					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(k - 1, j + 2, i)));
 				}
 			}
 		}
+	}
 }
 void Application::Display(void)
 {
