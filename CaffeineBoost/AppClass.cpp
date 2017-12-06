@@ -28,6 +28,17 @@ void Application::InitVariables(void)
 
 	m_noiseGen = new ProceduralGeneration();
 
+	m_pTable = new Model();
+	m_pChest = new Model();
+	m_pCoffee = new Model();
+	m_pHallway = new Model();
+
+	m_pTable->Load("Models\\Table.obj");
+	//m_pChest->Load("Chest.obj");
+	//m_pCoffee->Load("CoffeeCup.obj");
+	//m_pHallway->Load("HallwaySegment.obj");
+
+
 }
 void Application::Update(void)
 {

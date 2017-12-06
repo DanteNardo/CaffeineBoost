@@ -20,7 +20,12 @@ class Application
 	MyCamera* m_pCamera = nullptr; //Camera class
 	MyMeshManager* m_pMyMeshMngr = nullptr; //My Mesh Manager
 	ProceduralGeneration* m_noiseGen = nullptr; //Procedural obstacle generator
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //Programmer
+	String m_sProgrammer = "Free Coffee Team"; //Programmer
+
+	Model* m_pTable;
+	Model* m_pChest;
+	Model* m_pCoffee;
+	Model* m_pHallway;
 private:
 	static ImGuiObject gui; //GUI object
 
@@ -316,7 +321,7 @@ private:
 
 } //namespace simplex
 
-#endif //__APPLICATIONCLASS_H_
+#endif //__APPLICATION CLASS_H_
 
 /*
 USAGE:
