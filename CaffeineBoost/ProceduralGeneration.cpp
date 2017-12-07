@@ -2,12 +2,12 @@
 
 ProceduralGeneration::ProceduralGeneration()
 {
-	w = 3;
+	w = 5;
 	h = 2;
-	l = 10;
+	l = 30;
 	wBuffer = 1;
 	hBuffer = 1;
-	lBuffer = 2;
+	lBuffer = 4;
 	difficulty = 5;
 
 	lanes = new int[l];
@@ -16,8 +16,8 @@ ProceduralGeneration::ProceduralGeneration()
 	}
 	batches = std::vector<Batch*>();
 
-	Generate(EASY);
-	Generate(MEDIUM);
+	Generate(HARD);
+	Generate(HARD);
 }
 
 ProceduralGeneration::ProceduralGeneration(int w, int h, int l, int wBuffer, int hBuffer, int lBuffer, int difficulty)

@@ -19,7 +19,7 @@ class Application
 {
 	MyCamera* m_pCamera = nullptr; //Camera class
 	MyMeshManager* m_pMyMeshMngr = nullptr; //My Mesh Manager
-	ProceduralGeneration* m_noiseGen = nullptr; //Procedural obstacle generator
+	ProceduralGeneration* m_pGen = nullptr; //Procedural obstacle generator
 	String m_sProgrammer = "Free Coffee Team"; //Programmer
 
 	Model* m_pTable;

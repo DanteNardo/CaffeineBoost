@@ -17,16 +17,16 @@ void Application::InitVariables(void)
 	//init the camera
 	m_pCamera = new MyCamera();
 	m_pCamera->SetPositionTargetAndUp(
-			vector3(0.0f, 3.0f, 20.0f), //Where my eyes are
-			vector3(0.0f, 3.0f, 19.0f), //where what I'm looking at is
-			AXIS_Y);					//what is up
+		vector3(0.0f, 3.0f, 20.0f), //Where my eyes are
+		vector3(0.0f, 3.0f, 19.0f), //where what I'm looking at is
+		AXIS_Y);					//what is up
 
-	//Get the singleton
+//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 	clockMove = m_pSystem->GenClock();
 
-	m_noiseGen = new ProceduralGeneration();
+	m_pGen = new ProceduralGeneration();
 
 	m_pTable = new Model();
 	m_pChest = new Model();
@@ -47,9 +47,9 @@ void Application::Update(void)
 
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
-	m_pCamera->moveForward(fDelta);
+	//m_pCamera->moveForward(fDelta);
 
-	m_pCamera->fall(fDelta);
+	//m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
 	ArcBall();
@@ -67,17 +67,19 @@ void Application::Update(void)
 	}
 
 
-	//iterate through each row of every slice, spawn cubes
-	Batch * b = m_noiseGen->GetBatch();
+	// Iterate through a 3D Batch (std::vector of int*)
+	// Each int* is a single dimension array that represents a 2D array
+	Batch* b = m_pGen->GetBatch();
 	for (int i = 0; i < b->data.size(); i++) {
-		for (int j = 0; j <= 1; j++) {
-			for (int k = 0; k <= 2; k++) {
+		for (int j = 0; j < m_pGen->GetWidth() * m_pGen->GetHeight(); j++) {
 
-				//allow obstacle spawning where procedural gen results in 1
-				if (*(b->data[j+k]) == 1)
-				{
-					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(k - 1, j + 2, i)));
-				}
+			// Spawn an obstacle whenever the array value is 1
+			if (b->data[i][j] == 1)
+			{
+				float genToWorld = 1.0f;
+				int x = (j + 0) % m_pGen->GetWidth();
+				int y = (j + 0) / m_pGen->GetWidth();
+				m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(x * genToWorld, y * genToWorld + 2, i)));
 			}
 		}
 	}
@@ -92,16 +94,16 @@ void Application::Display(void)
 
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
-	
+
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
 	//clear the MyMeshManager list
 	m_pMyMeshMngr->ClearRenderList();
-	
+
 	//draw gui
 	DrawGUI();
-	
+
 	//end the current frame (internally swaps the front and back buffers)
 	m_pWindow->display();
 }
