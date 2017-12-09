@@ -89,7 +89,7 @@ void Simplex::MyCamera::Init(void)
 	velocity = 0;
 
 	//the speed the object moves sideways at
-	sideSpeed = 1;
+	sideSpeed = 0.25;
 
 	//amount speed is increased by
 	speedIncrease = .5;
@@ -112,7 +112,9 @@ void Simplex::MyCamera::Init(void)
 	//height to check against for falling
 	initHeight = 3;
 
-	
+	leftLimit = 0;
+
+	rightLimit = 4;
 }
 
 void Simplex::MyCamera::Release(void)
@@ -214,20 +216,24 @@ void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
 	//if direction is true, move right
 	if (direction)
 	{
-		//moves camera position by velocity amount
-		SetPosition(m_v3Position + vector3(sideSpeed, 0, 0));
+		if (m_v3Target.x - (sideSpeed) < rightLimit) {
+			//moves camera position by velocity amount
+			SetPosition(m_v3Position + vector3(sideSpeed, 0, 0));
 
-		//moves target so camera doesn't turn
-		SetTarget(vector3(m_v3Target.x + (sideSpeed), m_v3Target.y, m_v3Target.z));
+			//moves target so camera doesn't turn
+			SetTarget(vector3(m_v3Target.x + (sideSpeed), m_v3Target.y, m_v3Target.z));
+		}
 	}
 	//if false, move left
 	else
 	{
-		//moves camera position by velocity amount
-		SetPosition(m_v3Position - vector3(sideSpeed, 0, 0));
+		if (m_v3Target.x - (sideSpeed) > leftLimit) {
+			//moves camera position by velocity amount
+			SetPosition(m_v3Position - vector3(sideSpeed, 0, 0));
 
-		//moves target so camera doesn't turn
-		SetTarget(vector3(m_v3Target.x -(sideSpeed), m_v3Target.y, m_v3Target.z));
+			//moves target so camera doesn't turn
+			SetTarget(vector3(m_v3Target.x - (sideSpeed), m_v3Target.y, m_v3Target.z));
+		}
 	}
 }
 

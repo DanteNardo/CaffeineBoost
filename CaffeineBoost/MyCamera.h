@@ -38,6 +38,8 @@ class MyCamera
 	float verticalDelta;
 	float terminalVelocity;
 	float jumpImpulse;
+	float leftLimit;
+	float rightLimit;
 
 public:
 	/*
