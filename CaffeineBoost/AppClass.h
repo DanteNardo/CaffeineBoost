@@ -12,6 +12,7 @@ Date: 2017/05
 
 #include "MyMeshManager.h"
 #include "ProceduralGeneration.h"
+#include "ObjectCollidiable.h"
 namespace Simplex
 {
 

@@ -6,6 +6,7 @@ Date: 2017/06
 #define __MYCAMERACLASS_H_
 
 #include "Definitions.h"
+#include "ObjectCollidiable.h"
 
 namespace Simplex
 {
@@ -262,6 +263,7 @@ public:
 	//method for colliding with coffee cups
 	void coffeCollide();
 
+	bool IsColliding(ObjectCollidiable* const other);
 };
 
 } //namespace Simplex

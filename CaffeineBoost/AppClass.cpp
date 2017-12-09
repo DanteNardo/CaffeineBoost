@@ -47,8 +47,8 @@ void Application::Update(void)
 
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
+	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
-
 	m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
@@ -78,8 +78,19 @@ void Application::Update(void)
 					int x = k % m_pGen->GetWidth();
 					int y = k / m_pGen->GetWidth();
 					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
-					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(x * genToWorld, y * genToWorld, z)));
+
+					//instance p as reference object
+					ObjectCollidiable* p = new ObjectCollidiable(vector3(x * genToWorld, y * genToWorld, z));
+
+					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(p->GetPosition()));
+				
+					//if (m_pCamera->IsColliding(p)) {
+					//	m_pCamera->collide(p->GetPosition());
+					//}
+					
 				}
+
+				//todo: add coffee generation at intervals
 			}
 		}
 	}

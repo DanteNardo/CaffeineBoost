@@ -297,11 +297,18 @@ float Simplex::MyCamera::TerminalVelocity(){	return terminalVelocity;}
 //returns how much verticalvelocity jump adds
 float Simplex::MyCamera::JumpImpulse(){	return jumpImpulse;}
 
+//vector3 MyRigidBody::GetCenterGlobal(void) { return vector3(m_m4ToWorld * vector4(m_v3Center, 1.0f)); }
+
+bool Simplex::MyCamera::IsColliding(ObjectCollidiable* const other)
+{
+	return (glm::distance(this->GetPosition(), other->GetPosition()) < 1.0f);
+}
+
 void Simplex::MyCamera::collide(vector3 position)
 {
 
 	float difference = position.z - m_v3Position.z;
-	velocity = -difference * velocity * 10;
+	velocity = -difference * velocity * 2;
 	slowDown();
 
 }
