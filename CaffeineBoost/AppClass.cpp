@@ -17,11 +17,11 @@ void Application::InitVariables(void)
 	//init the camera
 	m_pCamera = new MyCamera();
 	m_pCamera->SetPositionTargetAndUp(
-		vector3(0.0f, 3.0f, 20.0f), //Where my eyes are
-		vector3(0.0f, 3.0f, 19.0f), //where what I'm looking at is
+		vector3(0.0f, 1.0f, 20.0f), //Where my eyes are
+		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
 
-//Get the singleton
+	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 	clockMove = m_pSystem->GenClock();
@@ -33,7 +33,7 @@ void Application::InitVariables(void)
 	m_pCoffee = new Model();
 	m_pHallway = new Model();
 
-	m_pTable->Load("Models\\Table.obj");
+	m_pTable->Load("Models\\Table.mtl");
 	//m_pChest->Load("Chest.obj");
 	//m_pCoffee->Load("CoffeeCup.obj");
 	//m_pHallway->Load("HallwaySegment.obj");
@@ -57,32 +57,33 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
-	//Add objects to the Manager
-	for (int j = -50; j < 50; j += 2)
-	{
-		for (int i = -50; i < 50; i += 2)
-		{
-			m_pMyMeshMngr->AddConeToRenderList(glm::translate(vector3(i, 0.0f, j)));
-		}
-	}
+	#pragma region Populating World
+	float genToWorld = 1.0f;
+	Batch* b = &Batch();
 
+	// Iterate through every 3D Batch (std::vector of Batch*)
+	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
+		b = m_pGen->GetBatches()[i];
 
-	// Iterate through a 3D Batch (std::vector of int*)
-	// Each int* is a single dimension array that represents a 2D array
-	Batch* b = m_pGen->GetBatch();
-	for (int i = 0; i < b->data.size(); i++) {
-		for (int j = 0; j < m_pGen->GetWidth() * m_pGen->GetHeight(); j++) {
+		//if (i == 0) continue;
 
-			// Spawn an obstacle whenever the array value is 1
-			if (b->data[i][j] == 1)
-			{
-				float genToWorld = 1.0f;
-				int x = (j + 0) % m_pGen->GetWidth();
-				int y = (j + 0) / m_pGen->GetWidth();
-				m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(x * genToWorld, y * genToWorld + 2, i)));
+		// Iterate through current 3D Batch (std::vector of int*)
+		for (int j = 0; j < b->data.size(); j++) {
+
+			// Each int* is a single dimension array that represents a 2D array
+			for (int k = 0; k < m_pGen->GetWidth() * m_pGen->GetHeight(); k++) {
+
+				// Spawn an obstacle whenever the array value is 1
+				if (b->data[j][k] == 1) {
+					int x = k % m_pGen->GetWidth();
+					int y = k / m_pGen->GetWidth();
+					int z = -(j +(i * m_pGen->GetLength()));
+					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(x * genToWorld, y * genToWorld, z)));
+				}
 			}
 		}
 	}
+	#pragma endregion
 }
 void Application::Display(void)
 {
@@ -109,11 +110,20 @@ void Application::Display(void)
 }
 void Application::Release(void)
 {
-	//release the singleton
+	// Release the singleton
 	MyMeshManager::ReleaseInstance();
 
-	//release the camera
+	// Release the camera
 	SafeDelete(m_pCamera);
+
+	// Release the procedural generator
+	SafeDelete(m_pGen);
+
+	// Release the models
+	SafeDelete(m_pTable);
+	SafeDelete(m_pChest);
+	SafeDelete(m_pCoffee);
+	SafeDelete(m_pHallway);
 
 	//release GUI
 	ShutdownGUI();

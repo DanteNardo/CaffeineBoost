@@ -8,7 +8,7 @@ ProceduralGeneration::ProceduralGeneration()
 	wBuffer = 1;
 	hBuffer = 1;
 	lBuffer = 4;
-	difficulty = 5;
+	difficulty = 15;
 
 	lanes = new int[l];
 	for (int i = 0; i < l; i++) {
@@ -50,6 +50,11 @@ ProceduralGeneration::~ProceduralGeneration()
 Batch* ProceduralGeneration::GetBatch()
 {
 	return batches[0];
+}
+
+std::vector<Batch*> ProceduralGeneration::GetBatches()
+{
+	return batches;
 }
 
 int ProceduralGeneration::GetWidth()

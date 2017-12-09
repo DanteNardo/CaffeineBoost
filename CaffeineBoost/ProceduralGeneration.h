@@ -38,6 +38,7 @@ private:
 	int wBuffer = 0, hBuffer = 0, lBuffer = 0;
 	int difficulty = 0;
 	const int DIFFICULTY_INCREASE = 5;
+	int* lanes = nullptr;
 	std::vector<Batch*> batches;
 
 	void GenerateLanes(int range, int difficulty);
@@ -51,10 +52,10 @@ public:
 	~ProceduralGeneration();
 
 	Batch* GetBatch();
+	std::vector<Batch*> GetBatches();
 	int GetWidth();
 	int GetHeight();
 	int GetLength();
-	int* lanes = nullptr;
 
 	void NextBatch();
 	void Generate(int range);
