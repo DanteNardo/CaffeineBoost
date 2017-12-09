@@ -1,4 +1,10 @@
+// Author: Dante Nardo
+// Last Modified: 12/8/2017
+// Purpose: Generates batches of data procedurally. Batches instantiated by AppClass.
+
 #include "ProceduralGeneration.h"
+
+#pragma region Constructors And Deconstructors
 
 ProceduralGeneration::ProceduralGeneration()
 {
@@ -39,13 +45,19 @@ ProceduralGeneration::ProceduralGeneration(int w, int h, int l, int wBuffer, int
 
 ProceduralGeneration::~ProceduralGeneration()
 {
+	// Free lanes array
 	delete[] lanes;
 	lanes = nullptr;
 
+	// Free all Batch structs (which free a std::vector<int*>)
 	for (int i = 0; i < batches.size(); i++) {
 		delete batches[i];
 	}
 }
+
+#pragma endregion
+
+#pragma region Accessors
 
 Batch* ProceduralGeneration::GetBatch()
 {
@@ -72,18 +84,30 @@ int ProceduralGeneration::GetLength()
 	return l;
 }
 
+#pragma endregion
+
+#pragma region Public Creation And Iteration
+
+void ProceduralGeneration::Generate(int range)
+{
+	// Generate enum values for each lane in the batch
+	GenerateLanes(range, difficulty);
+
+	// Add the batch created based on enums to the batches vector
+	AddBatch(GenerateBatch());
+}
+
 void ProceduralGeneration::NextBatch()
 {
+	// Erase earliest batch and add new batch to end
 	batches.erase(batches.begin());
 	difficulty += DIFFICULTY_INCREASE;
 	Generate(HARD);
 }
 
-void ProceduralGeneration::Generate(int range)
-{
-	GenerateLanes(range, difficulty);
-	AddBatch(GenerateBatch());
-}
+#pragma endregion
+
+#pragma region Private Creation Of Batches
 
 void ProceduralGeneration::GenerateLanes(int range, int difficulty)
 {
@@ -94,6 +118,9 @@ void ProceduralGeneration::GenerateLanes(int range, int difficulty)
 	int r = 0;
 	while (true) {
 		for (int i = 0; i < l; i += lBuffer) {
+
+			// Create a random enum value
+			// The lower the difficulty, the less 'points' to spend on each lane.
 			while (true) {
 				r = (rand() % range) + 1;
 				if (lanes[i] <= r) {
@@ -102,6 +129,8 @@ void ProceduralGeneration::GenerateLanes(int range, int difficulty)
 				}
 			}
 			lanes[i] = r;
+
+			// Return when we run out of points
 			if (difficulty <= 0) {
 				return;
 			}
@@ -121,11 +150,14 @@ std::vector<int*> ProceduralGeneration::GenerateBatch()
 int* ProceduralGeneration::GenerateLane(int index)
 {
 	// TODO: Replace all instances of 2 with h
-	// This requires the bottom portion of the algorithm to be adopted
+	// This requires the bottom portion of the algorithm to be adapted
 	// to accomodate multiple height values for each lane. Currently
 	// hardcoded to have a max height of 2.
 
-	// 2D Array that represents the width and height of one lane
+	// 1D Array that represents the width and height of one lane
+	// This array stores 2D information since:
+	// index % width = x value
+	// index / width = y value
 	int* lane = new int[w * 2];
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < w; j++) {
@@ -133,20 +165,26 @@ int* ProceduralGeneration::GenerateLane(int index)
 		}
 	}
 
-	// Determine how many blocks will be placed in this lane
+	// Determine how many blocks will be placed in this lane based on enum
 	int count = 0;
 	switch (lanes[index]) {
 	case NONE:
 		return lane;
 		break;
+
+	// A third of the total possible count
 	case EASY:
 		count = (w * 2) / 3;
 		break;
+
+	// Half of the total possible count
 	case MEDIUM:
 		count = (w * 2) / 2;
 		break;
+
+	// Most of the total possible count
 	case HARD:
-		count = (w * 2) / 1.05f;
+		count = (w * 2) / 1.2f;
 		count = count == w * 2 ? count - 1 : count;
 		break;
 	}
@@ -189,3 +227,5 @@ void ProceduralGeneration::AddBatch(std::vector<int*> data)
 {
 	batches.push_back(new Batch(data));
 }
+
+#pragma endregion
