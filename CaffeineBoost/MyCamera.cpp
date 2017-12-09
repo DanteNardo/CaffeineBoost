@@ -92,10 +92,10 @@ void Simplex::MyCamera::Init(void)
 	sideSpeed = 1;
 
 	//amount speed is increased by
-	speedIncrease = 2;
+	speedIncrease = .5;
 
 	//amount speed is decreased by
-	speedDecrease = 2;
+	speedDecrease = .5;
 
 	//amoun of vertical movement
 	verticalVelocity = 0;
@@ -107,7 +107,7 @@ void Simplex::MyCamera::Init(void)
 	terminalVelocity = -9.8f;
 
 	//jump height
-	jumpImpulse = 1;
+	jumpImpulse = .3;
 
 	//height to check against for falling
 	initHeight = 3;
@@ -198,9 +198,9 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 void Simplex::MyCamera::moveForward(float deltaTime)
 {
 
-	speedUp(deltaTime);
+	velocity += acceleration;
 
-	slowDown(deltaTime);
+	velocity = velocity * drag;
 
 	//moves camera position by velocity amount
 	SetPosition(m_v3Position + vector3(0, 0, -velocity * deltaTime));
@@ -233,15 +233,15 @@ void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
 
 
 //applys a drag force to slow down
-void Simplex::MyCamera::slowDown(float deltaTime)
+void Simplex::MyCamera::slowDown()
 {
-	velocity = velocity * drag;
+	acceleration -= speedDecrease;
 }
 
 //speeds up based on an acceleration
-void Simplex::MyCamera::speedUp(float deltaTime)
+void Simplex::MyCamera::speedUp()
 {
-	velocity += acceleration;
+	acceleration += speedIncrease;
 }
 
 void Simplex::MyCamera::jump()
@@ -259,9 +259,9 @@ void Simplex::MyCamera::fall(float deltaTime)
 	//moves target so camera doesn't turn
 	SetTarget(vector3(m_v3Target.x, m_v3Position.y, m_v3Target.z));
 	verticalVelocity = verticalVelocity - (3.0f * deltaTime);
-	if (m_v3Position.y < initHeight) {
-		SetPosition(vector3(m_v3Position.x, initHeight, m_v3Position.z));
-		SetTarget(vector3(m_v3Target.x, initHeight, m_v3Target.z));
+	if (m_v3Position.y < 1) {
+		SetPosition(vector3(m_v3Position.x, 1, m_v3Position.z));
+		SetTarget(vector3(m_v3Target.x, 1, m_v3Target.z));
 	}
 }
 
@@ -296,5 +296,11 @@ void Simplex::MyCamera::collide(vector3 position)
 
 	float difference = position.z - m_v3Position.z;
 	velocity = -difference * velocity * 10;
+	slowDown();
 
+}
+
+void Simplex::MyCamera::coffeCollide()
+{
+	speedUp();
 }

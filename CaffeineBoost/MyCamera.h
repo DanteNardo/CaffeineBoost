@@ -228,9 +228,9 @@ public:
 
 	void moveSideways(bool direction, float deltaTime);
 
-	void slowDown(float deltaTime);
+	void slowDown();
 
-	void speedUp(float deltaTime);
+	void speedUp();
 
 	void jump();
 
@@ -256,6 +256,9 @@ public:
 	//method to handle collisions
 	//takes in the center of the colliding object
 	void collide(vector3 position);
+
+	//method for colliding with coffee cups
+	void coffeCollide();
 
 };
 

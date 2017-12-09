@@ -47,9 +47,9 @@ void Application::Update(void)
 
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
-	//m_pCamera->moveForward(fDelta);
+	m_pCamera->moveForward(fDelta);
 
-	//m_pCamera->fall(fDelta);
+	m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
 	ArcBall();
