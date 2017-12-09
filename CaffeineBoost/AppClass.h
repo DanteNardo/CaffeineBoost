@@ -17,15 +17,19 @@ namespace Simplex
 
 class Application
 {
-	MyCamera* m_pCamera = nullptr; //Camera class
-	MyMeshManager* m_pMyMeshMngr = nullptr; //My Mesh Manager
-	ProceduralGeneration* m_pGen = nullptr; //Procedural obstacle generator
-	String m_sProgrammer = "Free Coffee Team"; //Programmer
+	MyCamera* m_pCamera = nullptr; // Camera class
+	MyMeshManager* m_pMyMeshMngr = nullptr; // My Mesh Manager
+	ProceduralGeneration* m_pGen = nullptr; // Procedural obstacle generator
+	String m_sProgrammer = "Free Coffee Team"; // Programmer
 
+	// Models
 	Model* m_pTable;
 	Model* m_pChest;
 	Model* m_pCoffee;
 	Model* m_pHallway;
+
+	int m_iBatchIterations = 1; // The current batch
+
 private:
 	static ImGuiObject gui; //GUI object
 

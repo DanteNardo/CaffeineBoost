@@ -57,15 +57,15 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
-	#pragma region Populating World
+	// Adds the procedurally generated world to the render list
+	#pragma region Instantiating Batches
+
 	float genToWorld = 1.0f;
 	Batch* b = &Batch();
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
 	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
 		b = m_pGen->GetBatches()[i];
-
-		//if (i == 0) continue;
 
 		// Iterate through current 3D Batch (std::vector of int*)
 		for (int j = 0; j < b->data.size(); j++) {
@@ -77,12 +77,23 @@ void Application::Update(void)
 				if (b->data[j][k] == 1) {
 					int x = k % m_pGen->GetWidth();
 					int y = k / m_pGen->GetWidth();
-					int z = -(j +(i * m_pGen->GetLength()));
+					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(vector3(x * genToWorld, y * genToWorld, z)));
 				}
 			}
 		}
 	}
+	#pragma endregion
+
+	// Creates a new batch when necessary
+	#pragma region Iterate Batches
+	
+	// Check if the player has passed the current batch and if so iterate
+	if (m_pCamera->GetPosition().z < -(m_iBatchIterations * m_pGen->GetLength())) {
+		m_pGen->NextBatch();
+		m_iBatchIterations++;
+	}
+
 	#pragma endregion
 }
 void Application::Display(void)
