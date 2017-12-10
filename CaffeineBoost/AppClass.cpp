@@ -1,6 +1,7 @@
 #include "AppClass.h"
 using namespace Simplex;
 
+int score = 0;
 unsigned int clockMove;
 void Application::InitVariables(void)
 {
@@ -20,8 +21,6 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 20.0f), //Where my eyes are
 		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
-
-
 
 
 	//Get the singleton
@@ -45,10 +44,9 @@ void Application::InitVariables(void)
 	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
 	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
-	obstacles = {};
-
-	//m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "hallway");
-
+	
+	
+	
 	cubemap = { vector3(-0.5, -0.5, 0.5),
 		vector3(0.5, -0.5, 0.5),
 		vector3(0.5, 0.5, 0.5),
@@ -66,6 +64,7 @@ void Application::InitVariables(void)
 		vector3(-0.25, -0.25, -0.25),
 		vector3(0.25, -0.25, -0.25),
 		vector3(0.25, 0.25, -0.25),
+		
 		vector3(-0.25, 0.25, -0.25) };
 
 	m_pPlayer = new RigidBody(playermap);
@@ -83,7 +82,7 @@ void Application::Update(void)
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
-
+    incrementScore(fDelta, m_pCamera->Velocity());
 #pragma region player rigid body updating
 
 	//get position for camera collisions
