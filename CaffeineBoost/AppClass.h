@@ -35,6 +35,8 @@ class Application
 	int m_iBatchIterations = 1; // The current batch
 
 	std::vector<vector3> cubemap;
+	std::vector<vector3> playermap;
+
 	bool collisionReg;
 
 private:
