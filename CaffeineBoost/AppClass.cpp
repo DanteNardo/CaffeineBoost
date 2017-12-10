@@ -63,9 +63,9 @@ void Application::Update(void)
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
 	//comment to disable automatic movement for testing
-	//m_pCamera->moveForward(fDelta);
+	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
-
+	
 
 	#pragma region player rigid body updating
 
