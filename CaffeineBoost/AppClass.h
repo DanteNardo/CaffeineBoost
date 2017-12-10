@@ -113,7 +113,14 @@ public:
 		return score;
 	}
 	void incrementScore(float dTime, float velocity) {
-		score += dTime * 100 * velocity;
+		if (velocity < 0) {
+
+
+			score += dTime * 100 * -velocity;
+		}
+		else {
+			score += dTime * 100;
+		}
 	}
 #pragma endregion
 
