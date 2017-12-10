@@ -47,15 +47,15 @@ void Application::InitVariables(void)
 	
 	
 
-	cubemap = { vector3(-1, -1, 1),
-		vector3(1, -1, 1),
-		vector3(1, 1, 1),
-		vector3(-1, 1, 1),
+	cubemap = { vector3(-0.5, -0.5, 0.5),
+		vector3(0.5, -0.5, 0.5),
+		vector3(0.5, 0.5, 0.5),
+		vector3(-0.5, 0.5, 0.5),
 
-		vector3(-1, -1, -1),
-		vector3(1, -1, -1),
-		vector3(1, 1, -1),
-		vector3(-1, 1, -1) };
+		vector3(-0.5, -0.5, -0.5),
+		vector3(0.5, -0.5, -0.5),
+		vector3(0.5, 0.5, -0.5),
+		vector3(-0.5, 0.5, -0.5) };
 	playermap = { vector3(-0.25, -0.25, 0.25),
 		vector3(0.25, -0.25, 0.25),
 		vector3(0.25, 0.25, 0.25),
@@ -139,7 +139,7 @@ void Application::Update(void)
 					//Adds the table to render list, with the identifier "table jk"
 					//m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj");
 					//m_pMyEntityMngr->SetModelMatrix(mObstacle);
-				
+					//m_pMyEntityMngr->AddEntityToRenderList(-1, false);
 					//collision check
 					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
 
@@ -179,9 +179,9 @@ void Application::Display(void)
 
 
 	//clear the render list
-	m_pMeshMngr->ClearRenderList();
+	//m_pMeshMngr->ClearRenderList();
 
-	m_pMyEntityMngr->AddEntityToRenderList(-1, false);
+	//m_pMyEntityMngr->AddEntityToRenderList(-1, false);
 
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
