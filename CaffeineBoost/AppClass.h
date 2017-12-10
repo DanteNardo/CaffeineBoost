@@ -41,6 +41,9 @@ class Application
 	std::vector<vector3> playermap;
 	bool collisionReg;
 
+	//vector to hold the strings for obstacles;
+	std::vector<std::string> obstacles;
+
 private:
 	static ImGuiObject gui; //GUI object
 

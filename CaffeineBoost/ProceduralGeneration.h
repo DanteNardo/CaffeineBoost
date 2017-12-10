@@ -66,6 +66,8 @@ public:
 	int GetHeight();
 	int GetLength();
 
+	int GetLengthBuffer();
+
 	// Generate and Iteratioon
 	void Generate(int range);
 	void NextBatch();

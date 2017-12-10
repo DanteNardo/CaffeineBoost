@@ -50,6 +50,7 @@ public:
 	OUTPUT: ---
 	*/
 	void RemoveEntity(uint a_uIndex);
+	void RemoveAll();
 	/*
 	USAGE: Deletes the MyEntity Specified by unique ID and removes it from the list
 	ARGUMENTS: String a_sUniqueID -> Unique Identifier

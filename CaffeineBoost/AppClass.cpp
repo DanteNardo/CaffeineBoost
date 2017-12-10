@@ -22,6 +22,8 @@ void Application::InitVariables(void)
 		AXIS_Y);					//what is up
 
 
+
+
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
@@ -43,9 +45,9 @@ void Application::InitVariables(void)
 	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
 	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
+	obstacles = {};
 
-	
-	
+	//m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "hallway");
 
 	cubemap = { vector3(-0.5, -0.5, 0.5),
 		vector3(0.5, -0.5, 0.5),
@@ -66,7 +68,7 @@ void Application::InitVariables(void)
 		vector3(0.25, 0.25, -0.25),
 		vector3(-0.25, 0.25, -0.25) };
 
-	m_pPlayer = new RigidBody(playermap); 
+	m_pPlayer = new RigidBody(playermap);
 	// m_pTable->GetVertexList());
 
 }
@@ -80,9 +82,9 @@ void Application::Update(void)
 	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
-	
 
-	#pragma region player rigid body updating
+
+#pragma region player rigid body updating
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
@@ -90,7 +92,7 @@ void Application::Update(void)
 
 	m_pPlayer->SetModelMatrix(mPlayer);
 
-	#pragma endregion player rigid body updating
+#pragma endregion player rigid body updating
 
 
 	//Is the arcball active?
@@ -100,15 +102,33 @@ void Application::Update(void)
 	CameraRotation();
 
 
-	
+
 
 	// Adds the procedurally generated world to the render list
-	#pragma region Instantiating Batches
+#pragma region Instantiating Batches
 
 	float genToWorld = 1.0f;
 	Batch* b = &Batch();
 
 	collisionReg = false;
+
+	for (int i = 0; i < obstacles.size(); i++) {
+		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10,-10,-10)), obstacles[i]);
+	}
+
+
+	while (obstacles.size() < (m_pGen->GetLength() / m_pGen->GetLengthBuffer()) * m_pGen->GetWidth() * 2) {
+
+		if (rand() % 2 == 0) {
+			m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", std::to_string(obstacles.size() + 1));
+		}
+		else {
+			m_pMyEntityMngr->AddEntity("Minecraft\\Table.obj", std::to_string(obstacles.size() + 1));
+		}
+		obstacles.push_back(std::to_string(obstacles.size() + 1));
+	}
+
+	int objectIndex = 0;
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
 	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
@@ -124,7 +144,7 @@ void Application::Update(void)
 				if (b->data[j][k] == 1) {
 					int x = k % m_pGen->GetWidth();
 					int y = k / m_pGen->GetWidth();
-					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
+					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
 					//build obstacle as a rigid body and check collisions against player
 					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
@@ -134,12 +154,13 @@ void Application::Update(void)
 
 					rigidObs->SetModelMatrix(mObstacle);
 
-					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
-					//Adds the table to render list, with the identifier "table jk"
-					//m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj");
-					//m_pMyEntityMngr->SetModelMatrix(mObstacle);
-					//m_pMyEntityMngr->AddEntityToRenderList(-1, false);
+					//THIS LINE OF CODE SEEMINGLY DOES THE OPPOSITE THING IT SHOULD
+					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z))*m_pPlayer->GetModelMatrix(), objectIndex);
+
+					objectIndex++;
+
+
 					//collision check
 					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
 
@@ -154,43 +175,45 @@ void Application::Update(void)
 			}
 		}
 	}
-	#pragma endregion
+#pragma endregion
 
 	// Creates a new batch when necessary
-	#pragma region Iterate Batches
-	
-	// Check if the player has passed the current batch and if so iterate
+#pragma region Iterate Batches
+
+// Check if the player has passed the current batch and if so iterate
 	if (m_pCamera->GetPosition().z < -(m_iBatchIterations * m_pGen->GetLength())) {
 		m_pGen->NextBatch();
 		m_iBatchIterations++;
 	}
 
-	#pragma endregion
+#pragma endregion
 
 	//m_pMyEntityMngr->Update();
-	
+
 }
 void Application::Display(void)
 {
 	//Clear the screen
 	ClearScreen();
 
-	
+
 
 
 	//clear the render list
-	//m_pMeshMngr->ClearRenderList();
+	m_pMeshMngr->ClearRenderList();
 
-	//m_pMyEntityMngr->AddEntityToRenderList(-1, false);
+	m_pMyEntityMngr->AddEntityToRenderList(-1, false);
 
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
-	
+
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
 	//clear the MyMeshManager list
 	m_pMyMeshMngr->ClearRenderList();
+
+
 
 	//draw gui
 	DrawGUI();

@@ -84,6 +84,11 @@ int ProceduralGeneration::GetLength()
 	return l;
 }
 
+
+int ProceduralGeneration::GetLengthBuffer()
+{
+	return lBuffer;
+}
 #pragma endregion
 
 #pragma region Public Creation And Iteration

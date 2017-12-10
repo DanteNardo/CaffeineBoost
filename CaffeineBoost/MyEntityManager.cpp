@@ -250,6 +250,14 @@ void Simplex::MyEntityManager::RemoveEntity(uint a_uIndex)
 	//add one entity to the count
 	--m_uEntityCount;
 }
+void Simplex::MyEntityManager::RemoveAll() {
+	if (m_uEntityCount == 0)
+		return;
+	PEntity* tempArray = new PEntity[0];
+	delete[] m_mEntityArray;
+	m_mEntityArray = tempArray;
+}
+
 void Simplex::MyEntityManager::RemoveEntity(String a_sUniqueID)
 {
 	int nIndex = GetEntityIndex(a_sUniqueID);
