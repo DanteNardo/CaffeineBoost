@@ -301,7 +301,7 @@ void Simplex::MyCamera::collide(vector3 position)
 {
 
 	float difference = (position.z + 1) - m_v3Position.z;
-	velocity = -difference * velocity * 10
+	velocity = -difference * velocity * 10;
 	//slowDown();
 
 }
