@@ -26,6 +26,7 @@ class Application
 	RigidBody* m_pPlayer = nullptr;
 
 	// Models
+	Model* m_pSteve;
 	Model* m_pTable;
 	Model* m_pChest;
 	Model* m_pCoffee;
