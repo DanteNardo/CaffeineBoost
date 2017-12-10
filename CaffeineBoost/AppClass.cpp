@@ -56,6 +56,15 @@ void Application::InitVariables(void)
 		vector3(1, -1, -1),
 		vector3(1, 1, -1),
 		vector3(-1, 1, -1) };
+	playermap = { vector3(-0.25, -0.25, 0.25),
+		vector3(0.25, -0.25, 0.25),
+		vector3(0.25, 0.25, 0.25),
+		vector3(-0.25, 0.25, 0.25),
+
+		vector3(-0.25, -0.25, -0.25),
+		vector3(0.25, -0.25, -0.25),
+		vector3(0.25, 0.25, -0.25),
+		vector3(-0.25, 0.25, -0.25) };
 
 	m_pPlayer = new RigidBody(playermap); 
 	// m_pTable->GetVertexList());
