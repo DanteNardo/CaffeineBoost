@@ -35,9 +35,10 @@ void Application::DrawGUI(void)
 				ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 			ImGui::Text("Control:\n");
 			ImGui::Text("   WASD: Movement\n");
-			ImGui::Text("Right Click + move: Rotate line of view\n");
+			String scoreString = std::to_string(getScore());
+			ImGui::Text(scoreString.c_str());
 			
-
+			
 		}
 		ImGui::End();
 	}

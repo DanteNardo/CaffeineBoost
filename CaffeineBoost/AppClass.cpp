@@ -1,6 +1,7 @@
 #include "AppClass.h"
 using namespace Simplex;
 
+int score = 0;
 unsigned int clockMove;
 void Application::InitVariables(void)
 {
@@ -43,7 +44,7 @@ void Application::InitVariables(void)
 	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
 	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
-
+	
 	
 	
 
@@ -80,6 +81,9 @@ void Application::Update(void)
 	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
+	
+	incrementScore(fDelta, m_pCamera->Velocity());
+
 	
 
 	#pragma region player rigid body updating

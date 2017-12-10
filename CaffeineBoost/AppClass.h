@@ -43,7 +43,7 @@ class Application
 
 private:
 	static ImGuiObject gui; //GUI object
-
+	int score = 0;
 	uint m_uRenderCallCount = 0; //count of render calls per frame
 	uint m_uControllerCount = 0; //count of controllers connected
 
@@ -105,6 +105,13 @@ public:
 	OUTPUT: ---
 	*/
 	~Application(void);
+
+	int getScore() {
+		return score;
+	}
+	void incrementScore(float dTime, float velocity) {
+		score += dTime * 100 * velocity;
+	}
 #pragma endregion
 
 private:
