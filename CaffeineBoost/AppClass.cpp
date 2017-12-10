@@ -82,7 +82,7 @@ void Application::Update(void)
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 	
-	incrementScore(fDelta, m_pCamera->Velocity());
+	incrementScore(fDelta, m_pCamera->GetPosition().z);
 
 	
 
