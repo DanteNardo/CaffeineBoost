@@ -21,6 +21,7 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
 
+
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
@@ -39,6 +40,8 @@ void Application::InitVariables(void)
 	//m_pHallway->Load("HallwaySegment.obj");
 
 
+	m_pPlayer = new RigidBody(m_pTable->GetVertexList());
+
 }
 void Application::Update(void)
 {
@@ -50,6 +53,18 @@ void Application::Update(void)
 	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
+
+
+	#pragma region player rigid body 
+
+	//get position for camera collisions
+	vector3 campos = m_pCamera->GetPosition();
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y, campos.z));
+
+	m_pPlayer->SetModelMatrix(mPlayer);
+
+	#pragma endregion player rigid body
+
 
 	//Is the arcball active?
 	ArcBall();
@@ -80,14 +95,26 @@ void Application::Update(void)
 					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
 					//instance p as reference object
+					//created OC as handler, should probably simplify into just the rigidbody
 					ObjectCollidiable* p = new ObjectCollidiable(vector3(x * genToWorld, y * genToWorld, z));
+
+					RigidBody* test2 = new RigidBody(m_pTable->GetVertexList());
+
+					matrix4 mTable = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
+					test2->SetModelMatrix(mTable);
 
 					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(p->GetPosition()));
 				
-					//if (m_pCamera->IsColliding(p)) {
-					//	m_pCamera->collide(p->GetPosition());
-					//}
-					
+					if (m_pPlayer->IsColliding(test2)) {
+
+						m_pCamera->collide(p->GetPosition());
+					}
+
+					//todo, probably push p to array and recycle at start instead
+					//for now doing this to avoid memory leaks
+					p->~ObjectCollidiable();
+
+					test2->~RigidBody();
 				}
 
 				//todo: add coffee generation at intervals

@@ -42,6 +42,9 @@ class MyCamera
 	float leftLimit;
 	float rightLimit;
 
+	std::set<ObjectCollidiable*> m_CollidingRBSet; //set of rigid bodies this one is colliding with
+
+
 public:
 	/*
 	USAGE: Constructor
@@ -264,6 +267,20 @@ public:
 	void coffeCollide();
 
 	bool IsColliding(ObjectCollidiable* const other);
+
+	/*
+	USAGE: Mark collision with the incoming Rigid Body
+	ARGUMENTS: MyRigidBody* other -> inspected rigid body
+	OUTPUT: ---
+	*/
+	void AddCollisionWith(ObjectCollidiable* other);
+
+	/*
+	USAGE: Remove marked collision with the incoming Rigid Body
+	ARGUMENTS: MyRigidBody* other -> inspected rigid body
+	OUTPUT: ---
+	*/
+	void RemoveCollisionWith(ObjectCollidiable* other);
 };
 
 } //namespace Simplex

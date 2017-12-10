@@ -23,6 +23,9 @@ class Application
 	ProceduralGeneration* m_pGen = nullptr; // Procedural obstacle generator
 	String m_sProgrammer = "Free Coffee Team"; // Programmer
 
+	//rigidbody for player 
+	RigidBody* m_pPlayer = nullptr;
+
 	// Models
 	Model* m_pTable;
 	Model* m_pChest;
