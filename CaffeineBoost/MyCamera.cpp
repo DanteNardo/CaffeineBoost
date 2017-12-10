@@ -299,13 +299,10 @@ float Simplex::MyCamera::JumpImpulse(){	return jumpImpulse;}
 
 void Simplex::MyCamera::collide(vector3 position)
 {
-	if (velocity > 0) {
 
-
-		float difference = (position.z + 1) - m_v3Position.z;
-		velocity = -difference * velocity * 10;
-		slowDown();
-	}
+	float difference = (position.z + 1) - m_v3Position.z;
+	velocity = -difference * velocity * 10;
+	//slowDown();
 
 }
 

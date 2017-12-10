@@ -12,7 +12,6 @@ Date: 2017/05
 
 #include "MyMeshManager.h"
 #include "ProceduralGeneration.h"
-#include "ObjectCollidiable.h"
 namespace Simplex
 {
 
@@ -33,6 +32,9 @@ class Application
 	Model* m_pHallway;
 
 	int m_iBatchIterations = 1; // The current batch
+
+	std::vector<vector3> cubemap;
+	bool collisionReg;
 
 private:
 	static ImGuiObject gui; //GUI object
