@@ -19,6 +19,9 @@ class Application
 {
 	MyCamera* m_pCamera = nullptr; // Camera class
 	MyMeshManager* m_pMyMeshMngr = nullptr; // My Mesh Manager
+	EntityManager* m_pMyEntityMngr = nullptr;
+
+
 	ProceduralGeneration* m_pGen = nullptr; // Procedural obstacle generator
 	String m_sProgrammer = "Free Coffee Team"; // Programmer
 
@@ -35,8 +38,6 @@ class Application
 	int m_iBatchIterations = 1; // The current batch
 
 	std::vector<vector3> cubemap;
-	std::vector<vector3> playermap;
-
 	bool collisionReg;
 
 private:

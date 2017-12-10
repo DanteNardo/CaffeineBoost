@@ -25,40 +25,37 @@ void Application::InitVariables(void)
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
+
+	m_pMyEntityMngr = EntityManager::GetInstance();
+
 	clockMove = m_pSystem->GenClock();
 
 	m_pGen = new ProceduralGeneration();
 
-	m_pSteve = new Simplex::Model();
-	m_pTable = new Simplex::Model();
-	m_pChest = new Simplex::Model();
-	m_pCoffee = new Simplex::Model();
-	m_pHallway = new Simplex::Model();
+	//m_pSteve = new Simplex::Model();
+	//m_pTable = new Simplex::Model();
+	//m_pChest = new Simplex::Model();
+	//m_pCoffee = new Simplex::Model();
+	//m_pHallway = new Simplex::Model();
 
-	m_pTable->LoadOBJ("Minecraft\\Table.obj");
-	m_pChest->LoadOBJ("Minecraft\\Chest.obj");
-	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
-	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
+	//m_pTable->LoadOBJ("Minecraft\\Table.obj");
+	//m_pChest->LoadOBJ("Minecraft\\Chest.obj");
+	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
+	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
-	cubemap = { vector3(-0.5, -0.5, 0.5),
-		vector3(0.5, -0.5, 0.5),
-		vector3(0.5, 0.5, 0.5),
-		vector3(-0.5, 0.5, 0.5),
 
-		vector3(-0.5, -0.5, -0.5),
-		vector3(0.5, -0.5, -0.5),
-		vector3(0.5, 0.5, -0.5),
-		vector3(-0.5, 0.5, -0.5) };
+	
+	
 
-	playermap = { vector3(-0.25, -0.25, 0.25),
-		vector3(0.25, -0.25, 0.25),
-		vector3(0.25, 0.25, 0.25),
-		vector3(-0.25, 0.25, 0.25),
+	cubemap = { vector3(-1, -1, 1),
+		vector3(1, -1, 1),
+		vector3(1, 1, 1),
+		vector3(-1, 1, 1),
 
-		vector3(-0.25, -0.25, -0.25),
-		vector3(0.25, -0.25, -0.25),
-		vector3(0.25, 0.25, -0.25),
-		vector3(-0.25, 0.25, -0.25) };
+		vector3(-1, -1, -1),
+		vector3(1, -1, -1),
+		vector3(1, 1, -1),
+		vector3(-1, 1, -1) };
 
 	m_pPlayer = new RigidBody(cubemap); 
 	// m_pTable->GetVertexList());
@@ -93,6 +90,9 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
+
+	
+
 	// Adds the procedurally generated world to the render list
 	#pragma region Instantiating Batches
 
@@ -126,6 +126,10 @@ void Application::Update(void)
 					rigidObs->SetModelMatrix(mObstacle);
 
 					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+
+					//Adds the table to render list, with the identifier "table jk"
+					//m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj");
+					//m_pMyEntityMngr->SetModelMatrix(mObstacle);
 				
 					//collision check
 					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
@@ -153,28 +157,26 @@ void Application::Update(void)
 	}
 
 	#pragma endregion
+
+	//m_pMyEntityMngr->Update();
+	
 }
 void Application::Display(void)
 {
 	//Clear the screen
 	ClearScreen();
 
+	
+
+
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
 
+	m_pMyEntityMngr->AddEntityToRenderList(-1, false);
+
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
-
-
-	m_pTable->SetModelMatrix(ToMatrix4(m_qArcBall));
-	m_pTable->PlaySequence();
-	m_pChest->SetModelMatrix(ToMatrix4(m_qArcBall));
-	m_pChest->PlaySequence();
-	m_pCoffee->SetModelMatrix(ToMatrix4(m_qArcBall));
-	m_pCoffee->PlaySequence();
-	m_pHallway->SetModelMatrix(ToMatrix4(m_qArcBall));
-	m_pHallway->PlaySequence();
-
+	
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
