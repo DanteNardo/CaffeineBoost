@@ -80,7 +80,7 @@ void Application::Update(void)
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
-	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y, campos.z));
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
 
 	m_pPlayer->SetModelMatrix(mPlayer);
 
