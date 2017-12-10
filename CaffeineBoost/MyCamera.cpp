@@ -241,7 +241,14 @@ void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
 //applys a drag force to slow down
 void Simplex::MyCamera::slowDown()
 {
-	acceleration -= speedDecrease;
+	if (acceleration > 3) {
+
+
+		acceleration -= speedDecrease;
+	}
+	if (acceleration < 3) {
+		acceleration = 3;
+	}
 }
 
 //speeds up based on an acceleration
@@ -299,11 +306,11 @@ float Simplex::MyCamera::JumpImpulse(){	return jumpImpulse;}
 
 void Simplex::MyCamera::collide(vector3 position)
 {
-
-	float difference = (position.z + 1) - m_v3Position.z;
-	velocity = -difference * velocity * 10;
-	//slowDown();
-
+	if (velocity > 0) {
+		float difference = (position.z + 1) - m_v3Position.z;
+		velocity = -difference * velocity * 4;
+		slowDown();
+	}
 }
 
 void Simplex::MyCamera::coffeCollide()
