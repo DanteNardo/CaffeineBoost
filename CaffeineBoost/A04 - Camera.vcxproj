@@ -110,7 +110,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="MyCamera.cpp" />
     <ClCompile Include="MyMesh.cpp" />
     <ClCompile Include="MyMeshManager.cpp" />
-    <ClCompile Include="ObjectCollidiable.cpp" />
     <ClCompile Include="ProceduralGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +125,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="MyCamera.h" />
     <ClInclude Include="MyMesh.h" />
     <ClInclude Include="MyMeshManager.h" />
-    <ClInclude Include="ObjectCollidiable.h" />
     <ClInclude Include="ProceduralGeneration.h" />
   </ItemGroup>
   <ItemGroup>

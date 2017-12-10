@@ -21,6 +21,7 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
 
+
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
@@ -40,6 +41,19 @@ void Application::InitVariables(void)
 	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
 
+	cubemap = { vector3(-1, -1, 1),
+		vector3(1, -1, 1),
+		vector3(1, 1, 1),
+		vector3(-1, 1, 1),
+
+		vector3(-1, -1, -1),
+		vector3(1, -1, -1),
+		vector3(1, 1, -1),
+		vector3(-1, 1, -1) };
+
+	m_pPlayer = new RigidBody(cubemap); 
+	// m_pTable->GetVertexList());
+
 }
 void Application::Update(void)
 {
@@ -52,6 +66,18 @@ void Application::Update(void)
 	//m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
+
+	#pragma region player rigid body updating
+
+	//get position for camera collisions
+	vector3 campos = m_pCamera->GetPosition();
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y, campos.z));
+
+	m_pPlayer->SetModelMatrix(mPlayer);
+
+	#pragma endregion player rigid body updating
+
+
 	//Is the arcball active?
 	ArcBall();
 
@@ -63,6 +89,8 @@ void Application::Update(void)
 
 	float genToWorld = 1.0f;
 	Batch* b = &Batch();
+
+	collisionReg = false;
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
 	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
@@ -80,15 +108,24 @@ void Application::Update(void)
 					int y = k / m_pGen->GetWidth();
 					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					//instance p as reference object
-					ObjectCollidiable* p = new ObjectCollidiable(vector3(x * genToWorld, y * genToWorld, z));
+					//build obstacle as a rigid body and check collisions against player
+					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
 
-					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(p->GetPosition()));
-					
-					//if (m_pCamera->IsColliding(p)) {
-					//	m_pCamera->collide(p->GetPosition());
-					//}
-					
+					RigidBody* rigidObs = new RigidBody(cubemap); // m_pTable->GetVertexList());
+
+
+					rigidObs->SetModelMatrix(mObstacle);
+
+					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+				
+					//collision check
+					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
+
+						m_pCamera->collide(vector3(x * genToWorld, y * genToWorld, z));
+						collisionReg = true;
+					}
+
+					//rigidObs->~RigidBody();
 				}
 
 				//todo: add coffee generation at intervals

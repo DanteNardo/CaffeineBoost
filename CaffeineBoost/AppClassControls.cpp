@@ -122,8 +122,8 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 			}
 		}
 		break;
-	case sf::Keyboard::U:
-		m_pCamera->collide(vector3(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z + 1));
+	//case sf::Keyboard::U:
+	//	m_pCamera->collide(vector3(m_pCamera->GetPosition().x, m_pCamera->GetPosition().y, m_pCamera->GetPosition().z + 1));
 	}
 
 	//gui
@@ -391,9 +391,9 @@ void Application::ProcessKeyboard(void)
 	if (fMultiplier)
 		fSpeed *= 5.0f;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		m_pCamera->moveForward(fDelta);
-	}
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+	//	m_pCamera->moveForward(fDelta);
+	//}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		m_pCamera->moveSideways(true, fDelta);
@@ -404,9 +404,10 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		m_pCamera->jump();
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-		m_pCamera->fall(fDelta);
-	}
+
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+	//	m_pCamera->fall(fDelta);
+	//}
 		
 		
 #pragma endregion

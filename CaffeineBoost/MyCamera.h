@@ -6,7 +6,6 @@ Date: 2017/06
 #define __MYCAMERACLASS_H_
 
 #include "Definitions.h"
-#include "ObjectCollidiable.h"
 
 namespace Simplex
 {
@@ -41,6 +40,7 @@ class MyCamera
 	float jumpImpulse;
 	float leftLimit;
 	float rightLimit;
+
 
 public:
 	/*
@@ -262,8 +262,6 @@ public:
 
 	//method for colliding with coffee cups
 	void coffeCollide();
-
-	bool IsColliding(ObjectCollidiable* const other);
 };
 
 } //namespace Simplex
