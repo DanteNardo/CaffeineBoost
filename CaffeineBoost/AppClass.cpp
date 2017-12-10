@@ -57,7 +57,7 @@ void Application::InitVariables(void)
 		vector3(1, 1, -1),
 		vector3(-1, 1, -1) };
 
-	m_pPlayer = new RigidBody(cubemap); 
+	m_pPlayer = new RigidBody(playermap); 
 	// m_pTable->GetVertexList());
 
 }
@@ -71,13 +71,13 @@ void Application::Update(void)
 	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
-
+	
 
 	#pragma region player rigid body updating
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
-	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y, campos.z));
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
 
 	m_pPlayer->SetModelMatrix(mPlayer);
 

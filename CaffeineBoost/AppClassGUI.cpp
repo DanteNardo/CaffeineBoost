@@ -393,3 +393,7 @@ void Application::ShutdownGUI(void)
 
 	ImGui::Shutdown();
 }
+
+void UpdateScore(float deltaTime) {
+
+}

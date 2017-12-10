@@ -107,7 +107,7 @@ void Simplex::MyCamera::Init(void)
 	terminalVelocity = -9.8f;
 
 	//jump height
-	jumpImpulse = .3;
+	jumpImpulse = .2;
 
 	//height to check against for falling
 	initHeight = 3;
@@ -259,7 +259,7 @@ void Simplex::MyCamera::speedUp()
 
 void Simplex::MyCamera::jump()
 {
-	if (m_v3Position.y = initHeight) {
+	if (m_v3Position.y == 1) {
 
 		verticalVelocity = jumpImpulse;
 
@@ -271,7 +271,7 @@ void Simplex::MyCamera::fall(float deltaTime)
  	SetPosition(vector3(m_v3Position.x, m_v3Position.y + verticalVelocity, m_v3Position.z));
 	//moves target so camera doesn't turn
 	SetTarget(vector3(m_v3Target.x, m_v3Position.y, m_v3Target.z));
-	verticalVelocity = verticalVelocity - (3.0f * deltaTime);
+	verticalVelocity = verticalVelocity - (1.0f * deltaTime);
 	if (m_v3Position.y < 1) {
 		SetPosition(vector3(m_v3Position.x, 1, m_v3Position.z));
 		SetTarget(vector3(m_v3Target.x, 1, m_v3Target.z));
@@ -309,6 +309,9 @@ void Simplex::MyCamera::collide(vector3 position)
 	if (velocity > 0) {
 		float difference = (position.z + 1) - m_v3Position.z;
 		velocity = -difference * velocity * 4;
+		if (velocity > -75) {
+			velocity = -75;
+		}
 		slowDown();
 	}
 }
