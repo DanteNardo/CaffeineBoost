@@ -60,7 +60,7 @@ void Application::InitVariables(void)
 		vector3(0.25, 0.25, -0.25),
 		vector3(-0.25, 0.25, -0.25) };
 
-	m_pPlayer = new RigidBody(cubemap); 
+	m_pPlayer = new RigidBody(playermap); 
 	// m_pTable->GetVertexList());
 
 }
