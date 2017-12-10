@@ -40,18 +40,27 @@ void Application::InitVariables(void)
 	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
 	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
+	cubemap = { vector3(-0.5, -0.5, 0.5),
+		vector3(0.5, -0.5, 0.5),
+		vector3(0.5, 0.5, 0.5),
+		vector3(-0.5, 0.5, 0.5),
 
-	cubemap = { vector3(-1, -1, 1),
-		vector3(1, -1, 1),
-		vector3(1, 1, 1),
-		vector3(-1, 1, 1),
+		vector3(-0.5, -0.5, -0.5),
+		vector3(0.5, -0.5, -0.5),
+		vector3(0.5, 0.5, -0.5),
+		vector3(-0.5, 0.5, -0.5) };
 
-		vector3(-1, -1, -1),
-		vector3(1, -1, -1),
-		vector3(1, 1, -1),
-		vector3(-1, 1, -1) };
+	playermap = { vector3(-0.25, -0.25, 0.25),
+		vector3(0.25, -0.25, 0.25),
+		vector3(0.25, 0.25, 0.25),
+		vector3(-0.25, 0.25, 0.25),
 
-	m_pPlayer = new RigidBody(cubemap); 
+		vector3(-0.25, -0.25, -0.25),
+		vector3(0.25, -0.25, -0.25),
+		vector3(0.25, 0.25, -0.25),
+		vector3(-0.25, 0.25, -0.25) };
+
+	m_pPlayer = new RigidBody(playermap); 
 	// m_pTable->GetVertexList());
 
 }
@@ -71,7 +80,7 @@ void Application::Update(void)
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
-	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y, campos.z));
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
 
 	m_pPlayer->SetModelMatrix(mPlayer);
 
