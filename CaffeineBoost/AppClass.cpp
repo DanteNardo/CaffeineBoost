@@ -40,7 +40,18 @@ void Application::InitVariables(void)
 	//m_pHallway->Load("HallwaySegment.obj");
 
 
-	m_pPlayer = new RigidBody(m_pTable->GetVertexList());
+	cubemap = { vector3(-1, -1, 1),
+		vector3(1, -1, 1),
+		vector3(1, 1, 1),
+		vector3(-1, 1, 1),
+
+		vector3(-1, -1, -1),
+		vector3(1, -1, -1),
+		vector3(1, 1, -1),
+		vector3(-1, 1, -1) };
+
+	m_pPlayer = new RigidBody(cubemap); 
+	// m_pTable->GetVertexList());
 
 }
 void Application::Update(void)
@@ -55,7 +66,7 @@ void Application::Update(void)
 	m_pCamera->fall(fDelta);
 
 
-	#pragma region player rigid body 
+	#pragma region player rigid body updating
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
@@ -63,7 +74,7 @@ void Application::Update(void)
 
 	m_pPlayer->SetModelMatrix(mPlayer);
 
-	#pragma endregion player rigid body
+	#pragma endregion player rigid body updating
 
 
 	//Is the arcball active?
@@ -77,6 +88,8 @@ void Application::Update(void)
 
 	float genToWorld = 1.0f;
 	Batch* b = &Batch();
+
+	collisionReg = false;
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
 	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
@@ -94,27 +107,23 @@ void Application::Update(void)
 					int y = k / m_pGen->GetWidth();
 					int z = -(j +((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					//instance p as reference object
-					//created OC as handler, should probably simplify into just the rigidbody
-					ObjectCollidiable* p = new ObjectCollidiable(vector3(x * genToWorld, y * genToWorld, z));
+					//build obstacle as a rigid body and check collisions against player
+					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
 
-					RigidBody* test2 = new RigidBody(m_pTable->GetVertexList());
+					RigidBody* rigidObs = new RigidBody(cubemap); // m_pTable->GetVertexList());
 
-					matrix4 mTable = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
-					test2->SetModelMatrix(mTable);
+					rigidObs->SetModelMatrix(mObstacle);
 
-					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(p->GetPosition()));
+					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 				
-					if (m_pPlayer->IsColliding(test2)) {
+					//collision check
+					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
 
-						m_pCamera->collide(p->GetPosition());
+						m_pCamera->collide(vector3(x * genToWorld, y * genToWorld, z));
+						collisionReg = true;
 					}
 
-					//todo, probably push p to array and recycle at start instead
-					//for now doing this to avoid memory leaks
-					p->~ObjectCollidiable();
-
-					test2->~RigidBody();
+					//rigidObs->~RigidBody();
 				}
 
 				//todo: add coffee generation at intervals

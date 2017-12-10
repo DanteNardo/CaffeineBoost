@@ -6,7 +6,6 @@ Date: 2017/06
 #define __MYCAMERACLASS_H_
 
 #include "Definitions.h"
-#include "ObjectCollidiable.h"
 
 namespace Simplex
 {
@@ -41,8 +40,6 @@ class MyCamera
 	float jumpImpulse;
 	float leftLimit;
 	float rightLimit;
-
-	std::set<ObjectCollidiable*> m_CollidingRBSet; //set of rigid bodies this one is colliding with
 
 
 public:
@@ -265,22 +262,6 @@ public:
 
 	//method for colliding with coffee cups
 	void coffeCollide();
-
-	bool IsColliding(ObjectCollidiable* const other);
-
-	/*
-	USAGE: Mark collision with the incoming Rigid Body
-	ARGUMENTS: MyRigidBody* other -> inspected rigid body
-	OUTPUT: ---
-	*/
-	void AddCollisionWith(ObjectCollidiable* other);
-
-	/*
-	USAGE: Remove marked collision with the incoming Rigid Body
-	ARGUMENTS: MyRigidBody* other -> inspected rigid body
-	OUTPUT: ---
-	*/
-	void RemoveCollisionWith(ObjectCollidiable* other);
 };
 
 } //namespace Simplex
