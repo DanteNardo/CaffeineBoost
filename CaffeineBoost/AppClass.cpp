@@ -28,15 +28,16 @@ void Application::InitVariables(void)
 
 	m_pGen = new ProceduralGeneration();
 
-	m_pTable = new Model();
-	m_pChest = new Model();
-	m_pCoffee = new Model();
-	m_pHallway = new Model();
+	m_pSteve = new Simplex::Model();
+	m_pTable = new Simplex::Model();
+	m_pChest = new Simplex::Model();
+	m_pCoffee = new Simplex::Model();
+	m_pHallway = new Simplex::Model();
 
-	m_pTable->Load("Models\\Table.mtl");
-	//m_pChest->Load("Chest.obj");
-	//m_pCoffee->Load("CoffeeCup.obj");
-	//m_pHallway->Load("HallwaySegment.obj");
+	m_pTable->LoadOBJ("Minecraft\\Table.obj");
+	m_pChest->LoadOBJ("Minecraft\\Chest.obj");
+	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
+	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
 
 }
@@ -48,7 +49,7 @@ void Application::Update(void)
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
 	//comment to disable automatic movement for testing
-	m_pCamera->moveForward(fDelta);
+	//m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
 	//Is the arcball active?
@@ -83,7 +84,7 @@ void Application::Update(void)
 					ObjectCollidiable* p = new ObjectCollidiable(vector3(x * genToWorld, y * genToWorld, z));
 
 					m_pMyMeshMngr->AddCubeToRenderList(glm::translate(p->GetPosition()));
-				
+					
 					//if (m_pCamera->IsColliding(p)) {
 					//	m_pCamera->collide(p->GetPosition());
 					//}
@@ -117,6 +118,16 @@ void Application::Display(void)
 
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
+
+
+	m_pTable->SetModelMatrix(ToMatrix4(m_qArcBall));
+	m_pTable->PlaySequence();
+	m_pChest->SetModelMatrix(ToMatrix4(m_qArcBall));
+	m_pChest->PlaySequence();
+	m_pCoffee->SetModelMatrix(ToMatrix4(m_qArcBall));
+	m_pCoffee->PlaySequence();
+	m_pHallway->SetModelMatrix(ToMatrix4(m_qArcBall));
+	m_pHallway->PlaySequence();
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();

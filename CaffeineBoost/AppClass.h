@@ -24,6 +24,7 @@ class Application
 	String m_sProgrammer = "Free Coffee Team"; // Programmer
 
 	// Models
+	Model* m_pSteve;
 	Model* m_pTable;
 	Model* m_pChest;
 	Model* m_pCoffee;
