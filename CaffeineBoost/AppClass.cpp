@@ -173,8 +173,11 @@ void Application::Update(void)
 
 					rigidObs->~RigidBody();
 				}
-
-				//todo: add coffee generation at intervals
+				// Spawn coffee whenever the array value is 2
+				if (b->data[j][k] == 2) {
+					
+					// TODO: PUT COFFEE SPAWNING CODE HERE
+				}
 			}
 		}
 	}
