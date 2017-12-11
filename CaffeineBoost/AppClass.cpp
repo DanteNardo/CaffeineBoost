@@ -22,7 +22,7 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 20.0f), //Where my eyes are
 		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
-
+	
 
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
@@ -68,6 +68,13 @@ void Application::InitVariables(void)
 	m_pPlayer = new RigidBody(playermap);
 	// m_pTable->GetVertexList());
 
+	// init music
+	String filePath = m_pSystem->m_pFolder->GetFolderData();
+	filePath += m_pSystem->m_pFolder->GetFolderAudio();
+
+	m_soundBGM.openFromFile(filePath + "coffeerhythm.wav");
+	m_soundBGM.setLoop(true);
+	m_soundBGM.play();
 }
 void Application::Update(void)
 {
