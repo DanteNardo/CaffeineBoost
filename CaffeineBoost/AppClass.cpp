@@ -134,7 +134,7 @@ void Application::Update(void)
 		}
 		obstacles.push_back(std::to_string(obstacles.size() + 1));
 	}
-
+	
 	int objectIndex = 0;
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
@@ -161,11 +161,11 @@ void Application::Update(void)
 
 					rigidObs->SetModelMatrix(mObstacle);
 
-					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
-					//THIS LINE OF CODE SEEMINGLY DOES THE OPPOSITE THING IT SHOULD
-					m_pMyEntityMngr->SetModelMatrix(mObstacle*m_pPlayer->GetModelMatrix(), objectIndex);
-		
+					//THIS LINE OF CODE SEEMINGLY DOES THE THING IT SHOULD
+					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z+10) - m_pCamera->GetPosition() ), objectIndex);
+					
 					objectIndex++;
 
 
