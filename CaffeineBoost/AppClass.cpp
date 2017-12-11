@@ -123,8 +123,8 @@ void Application::Update(void)
 		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10,-10,-10)), obstacles[i]);
 	}
 
-
-	while (obstacles.size() < (m_pGen->GetLength() / m_pGen->GetLengthBuffer()) * m_pGen->GetWidth() * 2) {
+	// Spawn obstacles
+	while (obstacles.size() < (m_pGen->GetLength() / m_pGen->GetLengthBuffer()) * m_pGen->GetWidth() * 4) {
 
 		if (rand() % 2 == 0) {
 			m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", std::to_string(obstacles.size() + 1));
@@ -181,8 +181,6 @@ void Application::Update(void)
 				// Spawn coffee whenever the array value is 2
 				else if (b->data[j][k] == 2) {
 					
-					// TODO: PUT COFFEE SPAWNING CODE HERE
-					continue;
 				}
 			}
 		}
@@ -234,9 +232,11 @@ void Application::Release(void)
 {
 	// Release the singleton
 	MyMeshManager::ReleaseInstance();
+	EntityManager::ReleaseInstance();
 
 	// Release the camera
 	SafeDelete(m_pCamera);
+	SafeDelete(m_pPlayer);
 
 	// Release the procedural generator
 	SafeDelete(m_pGen);

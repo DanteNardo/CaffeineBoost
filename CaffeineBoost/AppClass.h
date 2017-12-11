@@ -46,6 +46,7 @@ class Application
 
 	//vector to hold the strings for obstacles;
 	std::vector<std::string> obstacles;
+	std::vector<std::string> coffee;
 
 	// audio files
 	sf::Music m_soundBGM;

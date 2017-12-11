@@ -261,7 +261,7 @@ public:
 	void collide(vector3 position);
 
 	//method for colliding with coffee cups
-	void coffeCollide();
+	void coffeeCollide();
 };
 
 } //namespace Simplex

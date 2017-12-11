@@ -89,7 +89,7 @@ void Simplex::MyCamera::Init(void)
 	velocity = 0;
 
 	//the speed the object moves sideways at
-	sideSpeed = 0.05;
+	sideSpeed = 0.15;
 
 	//amount speed is increased by
 	speedIncrease = .5;
@@ -254,7 +254,12 @@ void Simplex::MyCamera::slowDown()
 //speeds up based on an acceleration
 void Simplex::MyCamera::speedUp()
 {
-	acceleration += speedIncrease;
+	if (velocity > 0) {
+		acceleration += speedIncrease;
+	}
+	else {
+		acceleration += speedIncrease / 2;
+	}
 }
 
 void Simplex::MyCamera::jump()
@@ -316,7 +321,7 @@ void Simplex::MyCamera::collide(vector3 position)
 	}
 }
 
-void Simplex::MyCamera::coffeCollide()
+void Simplex::MyCamera::coffeeCollide()
 {
 	speedUp();
 }
