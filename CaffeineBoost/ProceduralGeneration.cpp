@@ -152,7 +152,7 @@ void ProceduralGeneration::GenerateCoffee()
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	for (int i = 0; i < l; i++) {
-		if (rand() % 2 == 0) {
+		if (rand() % 2 == 0 && lanes[i] == NONE) {
 			lanes[i] = COFFEE;
 		}
 	}
