@@ -14,7 +14,7 @@
     <ProjectGuid>{08A11DA8-4582-4AE0-90FE-929F44487E65}</ProjectGuid>
     <RootNamespace>A04 - Camera</RootNamespace>
     <ProjectName>CaffeineBoostBuild</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -112,6 +112,7 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="MyEntityManager.cpp" />
     <ClCompile Include="MyMesh.cpp" />
     <ClCompile Include="MyMeshManager.cpp" />
+    <ClCompile Include="MyOctant.cpp" />
     <ClCompile Include="MyRigidBody.cpp" />
     <ClCompile Include="MySolver.cpp" />
     <ClCompile Include="ProceduralGeneration.cpp" />
@@ -131,6 +132,7 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="MyEntityManager.h" />
     <ClInclude Include="MyMesh.h" />
     <ClInclude Include="MyMeshManager.h" />
+    <ClInclude Include="MyOctant.h" />
     <ClInclude Include="MyRigidBody.h" />
     <ClInclude Include="MySolver.h" />
     <ClInclude Include="ProceduralGeneration.h" />

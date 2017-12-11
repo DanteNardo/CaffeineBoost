@@ -1,5 +1,5 @@
 // Author: Dante Nardo
-// Last Modified: 12/8/2017
+// Last Modified: 12/10/2017
 // Purpose: Generates batches of data procedurally. Batches instantiated by AppClass.
 
 #include "ProceduralGeneration.h"
@@ -10,10 +10,10 @@ ProceduralGeneration::ProceduralGeneration()
 {
 	w = 5;
 	h = 2;
-	l = 30;
+	l = 160;
 	wBuffer = 1;
 	hBuffer = 1;
-	lBuffer = 10;
+	lBuffer = 40;
 	difficulty = 15;
 
 	lanes = new int[l];

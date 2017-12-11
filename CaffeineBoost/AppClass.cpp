@@ -34,20 +34,17 @@ void Application::InitVariables(void)
 
 	m_pGen = new ProceduralGeneration();
 
-	//m_pSteve = new Simplex::Model();
-	//m_pTable = new Simplex::Model();
-	//m_pChest = new Simplex::Model();
-	//m_pCoffee = new Simplex::Model();
-	//m_pHallway = new Simplex::Model();
+	m_pSteve = new Simplex::Model();
+	m_pTable = new Simplex::Model();
+	m_pChest = new Simplex::Model();
+	m_pCoffee = new Simplex::Model();
+	m_pHallway = new Simplex::Model();
 
-	//m_pTable->LoadOBJ("Minecraft\\Table.obj");
-	//m_pChest->LoadOBJ("Minecraft\\Chest.obj");
-	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
-	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
+	m_pTable->LoadOBJ("Minecraft\\Table.obj");
+	m_pChest->LoadOBJ("Minecraft\\Chest.obj");
+	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
+	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
-	
-	
-	
 	cubemap = { vector3(-0.5, -0.5, 0.5),
 		vector3(0.5, -0.5, 0.5),
 		vector3(0.5, 0.5, 0.5),
@@ -57,6 +54,7 @@ void Application::InitVariables(void)
 		vector3(0.5, -0.5, -0.5),
 		vector3(0.5, 0.5, -0.5),
 		vector3(-0.5, 0.5, -0.5) };
+
 	playermap = { vector3(-0.25, -0.25, 0.25),
 		vector3(0.25, -0.25, 0.25),
 		vector3(0.25, 0.25, 0.25),
@@ -65,11 +63,10 @@ void Application::InitVariables(void)
 		vector3(-0.25, -0.25, -0.25),
 		vector3(0.25, -0.25, -0.25),
 		vector3(0.25, 0.25, -0.25),
-		
 		vector3(-0.25, 0.25, -0.25) };
 
 	m_pPlayer = new RigidBody(playermap);
-	// m_pTable->GetVertexList());
+	m_pTable->GetVertexList();
 
 }
 void Application::Update(void)
@@ -100,8 +97,6 @@ void Application::Update(void)
 
 	//Is the first person camera active?
 	CameraRotation();
-
-
 
 
 	// Adds the procedurally generated world to the render list
@@ -154,10 +149,11 @@ void Application::Update(void)
 
 					rigidObs->SetModelMatrix(mObstacle);
 
+					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
 					//THIS LINE OF CODE SEEMINGLY DOES THE OPPOSITE THING IT SHOULD
-					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z))*m_pPlayer->GetModelMatrix(), objectIndex);
-
+					m_pMyEntityMngr->SetModelMatrix(mObstacle*m_pPlayer->GetModelMatrix(), objectIndex);
+		
 					objectIndex++;
 
 
@@ -168,7 +164,7 @@ void Application::Update(void)
 						collisionReg = true;
 					}
 
-					//rigidObs->~RigidBody();
+					rigidObs->~RigidBody();
 				}
 
 				//todo: add coffee generation at intervals
@@ -197,8 +193,6 @@ void Application::Display(void)
 	ClearScreen();
 
 
-
-
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
 
@@ -212,7 +206,6 @@ void Application::Display(void)
 
 	//clear the MyMeshManager list
 	m_pMyMeshMngr->ClearRenderList();
-
 
 
 	//draw gui
