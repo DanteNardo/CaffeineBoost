@@ -12,6 +12,9 @@ Date: 2017/05
 
 #include "MyMeshManager.h"
 #include "ProceduralGeneration.h"
+
+#include <SFML\Audio.hpp>
+
 namespace Simplex
 {
 
@@ -43,6 +46,9 @@ class Application
 
 	//vector to hold the strings for obstacles;
 	std::vector<std::string> obstacles;
+
+	// audio file
+	sf::Music m_soundBGM;
 
 private:
 	static ImGuiObject gui; //GUI object
