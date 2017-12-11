@@ -47,9 +47,12 @@ class Application
 	//vector to hold the strings for obstacles;
 	std::vector<std::string> obstacles;
 
-	// audio file
+	// audio files
 	sf::Music m_soundBGM;
-
+	// jump SFX
+	sf::Sound m_soundJump;
+	// sound buffer
+	sf::SoundBuffer m_soundBuffer;
 private:
 	static ImGuiObject gui; //GUI object
 	int score = 0;

@@ -403,6 +403,9 @@ void Application::ProcessKeyboard(void)
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		m_pCamera->jump();
+		m_soundJump.play();
+		
+		
 	}
 
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
