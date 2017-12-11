@@ -98,6 +98,9 @@ void ProceduralGeneration::Generate(int range)
 	// Generate enum values for each lane in the batch
 	GenerateLanes(range, difficulty);
 
+	// Generate coffee enum values for some random lanes
+	GenerateCoffee();
+
 	// Add the batch created based on enums to the batches vector
 	AddBatch(GenerateBatch());
 }
@@ -164,7 +167,7 @@ std::vector<int*> ProceduralGeneration::GenerateBatch()
 	return batch;
 }
 
-int* ProceduralGeneration::GenerateLane(int index, bool coffee = false)
+int* ProceduralGeneration::GenerateLane(int index)
 {
 	// TODO: Replace all instances of 2 with h
 	// This requires the bottom portion of the algorithm to be adapted
@@ -186,64 +189,63 @@ int* ProceduralGeneration::GenerateLane(int index, bool coffee = false)
 	//srand(static_cast<unsigned int>(time(NULL)));
 	int r = 0;
 
-	// Regular lane filling
-	if (!coffee) {
-
-		// Determine how many blocks will be placed in this lane based on enum
-		int count = 0;
-		switch (lanes[index]) {
+	// Determine how many blocks will be placed in this lane based on enum
+	int count = 0;
+	switch (lanes[index]) {
 		case NONE:
 			return lane;
 			break;
 
-			// A third of the total possible count
+		// A third of the total possible count
 		case EASY:
 			count = (w * 2) / 3;
 			break;
 
-			// Half of the total possible count
+		// Half of the total possible count
 		case MEDIUM:
 			count = (w * 2) / 2;
 			break;
 
-			// Most of the total possible count
+		// Most of the total possible count
 		case HARD:
 			count = (w * 2) / 1.2f;
 			count = count == w * 2 ? count - 1 : count;
 			break;
+
+		// Special coffee case
+		case COFFEE:
+			r = rand() % w;
+			lane[r] = 2;
+			return lane;
+	}
+
+	// Fill bottom row if large count
+	if (count >= w) {
+		count -= w;
+		for (int k = 0; k < w; k++) {
+			lane[k] = 1;
 		}
 
-		// Fill bottom row if large count
-		if (count >= w) {
-			count -= w;
-			for (int k = 0; k < w; k++) {
-				lane[k] = 1;
-			}
-
-			// Fill top row with remaining small count
-			while (count > 0) {
-				r = rand() % w;
-				if (lane[r + w] == 0) {
-					lane[r + w] = 1;
-					count--;
-				}
-			}
-		}
-		// Fill parts of bottom row if small count
-		else {
-			while (count > 0) {
-				r = rand() % w;
-				if (lane[r] == 0) {
-					lane[r] = 1;
-					count--;
-				}
+		// Fill top row with remaining small count
+		while (count > 0) {
+			r = rand() % w;
+			if (lane[r + w] == 0) {
+				lane[r + w] = 1;
+				count--;
 			}
 		}
 	}
+	// Fill parts of bottom row if small count
 	else {
-		r = rand() % w;
-		lane[r] = 2;
+		while (count > 0) {
+			r = rand() % w;
+			if (lane[r] == 0) {
+				lane[r] = 1;
+				count--;
+			}
+		}
 	}
+	
 
 	return lane;
 }

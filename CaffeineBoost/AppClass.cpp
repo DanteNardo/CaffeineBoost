@@ -174,9 +174,10 @@ void Application::Update(void)
 					rigidObs->~RigidBody();
 				}
 				// Spawn coffee whenever the array value is 2
-				if (b->data[j][k] == 2) {
+				else if (b->data[j][k] == 2) {
 					
 					// TODO: PUT COFFEE SPAWNING CODE HERE
+					continue;
 				}
 			}
 		}

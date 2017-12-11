@@ -51,7 +51,7 @@ private:
 	void GenerateLanes(int range, int difficulty);	// generates the enum value for each lane
 	void GenerateCoffee();							// generates coffee values in random empty lanes
 	std::vector<int*> GenerateBatch();				// generates a single batch's data
-	int* GenerateLane(int index, bool coffee);		// generates the 1D array that acts like a 2D array for each lane
+	int* GenerateLane(int index);					// generates the 1D array that acts like a 2D array for each lane
 	void AddBatch(std::vector<int*> batch);			// creates and adds a batch to batches based off of param data
 
 public:
