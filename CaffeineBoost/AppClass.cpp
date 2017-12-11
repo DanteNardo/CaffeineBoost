@@ -34,16 +34,16 @@ void Application::InitVariables(void)
 
 	m_pGen = new ProceduralGeneration();
 
-	//m_pSteve = new Simplex::Model();
-	//m_pTable = new Simplex::Model();
-	//m_pChest = new Simplex::Model();
-	//m_pCoffee = new Simplex::Model();
-	//m_pHallway = new Simplex::Model();
+	m_pSteve = new Simplex::Model();
+	m_pTable = new Simplex::Model();
+	m_pChest = new Simplex::Model();
+	m_pCoffee = new Simplex::Model();
+	m_pHallway = new Simplex::Model();
 
-	//m_pTable->LoadOBJ("Minecraft\\Table.obj");
-	//m_pChest->LoadOBJ("Minecraft\\Chest.obj");
-	//m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
-	//m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
+	m_pTable->LoadOBJ("Minecraft\\Table.obj");
+	m_pChest->LoadOBJ("Minecraft\\Chest.obj");
+	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
+	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
 	cubemap = { vector3(-0.5, -0.5, 0.5),
 		vector3(0.5, -0.5, 0.5),
@@ -66,7 +66,7 @@ void Application::InitVariables(void)
 		vector3(-0.25, 0.25, -0.25) };
 
 	m_pPlayer = new RigidBody(playermap);
-	// m_pTable->GetVertexList());
+	m_pTable->GetVertexList();
 
 	// init music
 	String filePath = m_pSystem->m_pFolder->GetFolderData();
