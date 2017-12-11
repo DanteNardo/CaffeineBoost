@@ -77,8 +77,8 @@ void Application::InitVariables(void)
 	m_soundBGM.play();
 
 	// sound effects
-	m_soundBuffer.loadFromFile(filePath + "jump.wav");
-	m_soundJump.setBuffer(m_soundBuffer);
+	//m_soundBuffer.loadFromFile(filePath + "jump.wav");
+	//m_soundJump.setBuffer(m_soundBuffer);
 	
 }
 void Application::Update(void)
@@ -134,6 +134,8 @@ void Application::Update(void)
 		}
 		obstacles.push_back(std::to_string(obstacles.size() + 1));
 	}
+
+	//m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", std::to_string(45));
 	
 	int objectIndex = 0;
 
@@ -180,7 +182,39 @@ void Application::Update(void)
 				}
 				// Spawn coffee whenever the array value is 2
 				else if (b->data[j][k] == 2) {
-					
+
+					int x = k % m_pGen->GetWidth();
+					int y = k / m_pGen->GetWidth();
+					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
+
+					//build obstacle as a rigid body and check collisions against player
+					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
+
+					RigidBody* rigidObs = new RigidBody(cubemap);
+
+					rigidObs->SetModelMatrix(mObstacle);
+
+					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+
+					//m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), 0);
+
+					//objectIndex++;
+
+
+					//collision check
+					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
+
+						m_pCamera->coffeeCollide();
+
+						//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+
+						collisionReg = true;
+
+
+					}
+
+					SafeDelete(rigidObs);
+
 				}
 			}
 		}
