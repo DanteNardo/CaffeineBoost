@@ -71,10 +71,15 @@ void Application::InitVariables(void)
 	// init music
 	String filePath = m_pSystem->m_pFolder->GetFolderData();
 	filePath += m_pSystem->m_pFolder->GetFolderAudio();
-
+	// file path is now set to the directory that holds audio files
 	m_soundBGM.openFromFile(filePath + "coffeerhythm.wav");
 	m_soundBGM.setLoop(true);
 	m_soundBGM.play();
+
+	// sound effects
+	m_soundBuffer.loadFromFile(filePath + "jump.wav");
+	m_soundJump.setBuffer(m_soundBuffer);
+	
 }
 void Application::Update(void)
 {
@@ -238,6 +243,10 @@ void Application::Release(void)
 	SafeDelete(m_pCoffee);
 	SafeDelete(m_pHallway);
 
+	// stop sounds
+	m_soundBGM.stop();
+	m_soundJump.stop();
+	
 	//release GUI
 	ShutdownGUI();
 }
