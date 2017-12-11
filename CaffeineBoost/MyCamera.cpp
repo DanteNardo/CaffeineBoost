@@ -89,7 +89,7 @@ void Simplex::MyCamera::Init(void)
 	velocity = 0;
 
 	//the speed the object moves sideways at
-	sideSpeed = 0.25;
+	sideSpeed = 0.05;
 
 	//amount speed is increased by
 	speedIncrease = .5;
