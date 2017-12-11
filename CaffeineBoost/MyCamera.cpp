@@ -112,7 +112,7 @@ void Simplex::MyCamera::Init(void)
 	//height to check against for falling
 	initHeight = 3;
 
-	leftLimit = -1;
+	leftLimit = 0;
 
 	rightLimit = 4;
 }
