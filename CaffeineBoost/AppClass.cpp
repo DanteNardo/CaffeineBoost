@@ -28,7 +28,7 @@ void Application::InitVariables(void)
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 
-	m_pMyEntityMngr = EntityManager::GetInstance();
+	m_pMyEntityMngr = MyEntityManager::GetInstance();
 
 	clockMove = m_pSystem->GenClock();
 
@@ -45,27 +45,29 @@ void Application::InitVariables(void)
 	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
 	cubemap = { vector3(-0.5, -0.5, 0.5),
-		vector3(0.5, -0.5, 0.5),
-		vector3(0.5, 0.5, 0.5),
-		vector3(-0.5, 0.5, 0.5),
+				vector3(0.5, -0.5, 0.5),
+				vector3(0.5, 0.5, 0.5),
+				vector3(-0.5, 0.5, 0.5),
 
-		vector3(-0.5, -0.5, -0.5),
-		vector3(0.5, -0.5, -0.5),
-		vector3(0.5, 0.5, -0.5),
-		vector3(-0.5, 0.5, -0.5) };
-
-	playermap = { vector3(-0.35, -0.35, 0.35),
-		vector3(0.35, -0.35, 0.35),
-		vector3(0.35, 0.35, 0.25),
-		vector3(-0.35, 0.35, 0.35),
-
-		vector3(-0.35, -0.35, -0.35),
-		vector3(0.35, -0.35, -0.35),
-		vector3(0.35, 0.35, -0.35),
-		vector3(-0.35, 0.35, -0.35) };
+				vector3(-0.5, -0.5, -0.5),
+				vector3(0.5, -0.5, -0.5),
+				vector3(0.5, 0.5, -0.5),
+				vector3(-0.5, 0.5, -0.5) };
 
 
+
+	// Initialize Player
+	playermap = {	vector3(-0.35, -0.35, 0.35),
+					vector3(0.35, -0.35, 0.35),
+					vector3(0.35, 0.35, 0.25),
+					vector3(-0.35, 0.35, 0.35),
+
+					vector3(-0.35, -0.35, -0.35),
+					vector3(0.35, -0.35, -0.35),
+					vector3(0.35, 0.35, -0.35),
+					vector3(-0.35, 0.35, -0.35) };
 	m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", "player");
+	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->SetPlayer(m_pCamera);
 
 	//test coffee cup
 	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
@@ -84,45 +86,8 @@ void Application::InitVariables(void)
 	// sound effects
 	//m_soundBuffer.loadFromFile(filePath + "jump.wav");
 	//m_soundJump.setBuffer(m_soundBuffer);
-	
-}
-void Application::Update(void)
-{
-	//Update the system so it knows how much time has passed since the last call
-	m_pSystem->Update();
 
-	float fDelta = m_pSystem->GetDeltaTime(clockMove);
-
-	//comment to disable automatic movement for testing
-	m_pCamera->moveForward(fDelta);
-	m_pCamera->fall(fDelta);
-
-    incrementScore(fDelta, m_pCamera->Velocity(), m_pCamera->GetPosition().z);
-
-#pragma region Player Updating
-
-	//get position for camera collisions
-	vector3 campos = m_pCamera->GetPosition();
-	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
-
-	m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
-
-#pragma endregion Player Updating
-
-	//Is the arcball active?
-	ArcBall();
-
-	//Is the first person camera active?
-	CameraRotation();
-
-	// Adds the procedurally generated world to the render list
-#pragma region Instantiating Batches
-
-	float genToWorld = 1.0f;
-	Batch* b = &Batch();
-
-	collisionReg = false;
-
+	#pragma region Obstacle Generation
 	// Spawn obstacles
 	while (obstacles.size() < (m_pGen->GetLength() / m_pGen->GetLengthBuffer()) * m_pGen->GetWidth() * 4) {
 
@@ -139,8 +104,52 @@ void Application::Update(void)
 	// set model matrix for (now) spawned entities
 	for (int i = 0; i < obstacles.size(); i++) {
 		//for now, we're setting way behind the player
-		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10,-10,-10)), obstacles[i]);
+		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10, -10, -10)), obstacles[i]);
 	}
+	#pragma endregion
+
+	#pragma region Octree Generation
+	AABB* rootAABB = new AABB(vector3(-5, -5, 30), vector3(5, 5, -60));
+	m_pRoot = new MyOctant(4, rootAABB, m_pMyEntityMngr, m_pMeshMngr);
+	m_pRoot->CreateTree();
+	m_pMyEntityMngr->Update();
+	m_pRoot->CheckForCollisions();
+	#pragma endregion
+}
+void Application::Update(void)
+{
+	//Update the system so it knows how much time has passed since the last call
+	m_pSystem->Update();
+
+	float fDelta = m_pSystem->GetDeltaTime(clockMove);
+
+	//comment to disable automatic movement for testing
+	m_pCamera->moveForward(fDelta);
+	m_pCamera->fall(fDelta);
+
+    incrementScore(fDelta, m_pCamera->Velocity(), m_pCamera->GetPosition().z);
+
+	#pragma region Player Updating
+
+	//get position for camera collisions
+	vector3 campos = m_pCamera->GetPosition();
+	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
+
+	m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
+
+	#pragma endregion
+
+	//Is the arcball active?
+	ArcBall();
+
+	//Is the first person camera active?
+	CameraRotation();
+
+	// Adds the procedurally generated world to the render list
+	#pragma region Instantiating Batches
+
+	float genToWorld = 1.0f;
+	Batch* b = &Batch();
 	
 	int objectIndex = 0;
 
@@ -164,13 +173,6 @@ void Application::Update(void)
 
 					//THIS LINE OF CODE SEEMINGLY DOES THE THING IT SHOULD
 					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z+10) - m_pCamera->GetPosition() ), objectIndex);
-					
-					//collision check
-					if (!collisionReg && m_pMyEntityMngr->GetRigidBody("player")->IsColliding(m_pMyEntityMngr->GetRigidBody(objectIndex))) {
-						//m_pCamera->collide(vector3(x * genToWorld, y * genToWorld, z));
-						collisionReg = true;
-					}
-
 					objectIndex++;
 				}
 				// Spawn coffee whenever the array value is 2
@@ -183,35 +185,28 @@ void Application::Update(void)
 					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
 					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), "coffee");
-
-					//objectIndex++;
-
-					//collision check
-					if (!collisionReg && m_pMyEntityMngr->GetRigidBody("player")->IsColliding(m_pMyEntityMngr->GetRigidBody("coffee"))) {
-						
-						//m_pCamera->coffeeCollide();
-
-						collisionReg = true;
-					}
 				}
 			}
 		}
 	}
-#pragma endregion
+	#pragma endregion
 
 	// Creates a new batch when necessary
-#pragma region Iterate Batches
+	#pragma region Iterate Batches
 
-// Check if the player has passed the current batch and if so iterate
+	// Check if the player has passed the current batch and if so iterate
 	if (m_pCamera->GetPosition().z < -(m_iBatchIterations * m_pGen->GetLength())) {
 		m_pGen->NextBatch();
 		m_iBatchIterations++;
 	}
 
-#pragma endregion
+	#pragma endregion
+
+	// Check for collisions in Octree
+	m_pMyEntityMngr->Update();
+	m_pRoot->CheckForCollisions();
 
 	//m_pMyEntityMngr->Update();
-	
 }
 void Application::Display(void)
 {
@@ -223,6 +218,9 @@ void Application::Display(void)
 
 	m_pMyEntityMngr->AddEntityToRenderList(-1, true);
 
+	// Display the Octree
+	m_pRoot->Display();
+
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
 
@@ -231,7 +229,6 @@ void Application::Display(void)
 
 	//clear the MyMeshManager list
 	m_pMyMeshMngr->ClearRenderList();
-
 
 	//draw gui
 	DrawGUI();
@@ -253,6 +250,9 @@ void Application::Release(void)
 
 	// Release the procedural generator
 	SafeDelete(m_pGen);
+
+	// Release the octree
+	SafeDelete(m_pRoot);
 
 	// Release the models
 	SafeDelete(m_pTable);

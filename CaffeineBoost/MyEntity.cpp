@@ -19,9 +19,18 @@ void Simplex::MyEntity::SetModelMatrix(matrix4 a_m4ToWorld)
 }
 Model* Simplex::MyEntity::GetModel(void){return m_pModel;}
 MyRigidBody* Simplex::MyEntity::GetRigidBody(void){	return m_pRigidBody; }
+void Simplex::MyEntity::SetPlayer(MyCamera* camera) 
+{ 
+	m_pCamera = camera; 
+}
+MyCamera* Simplex::MyEntity::GetPlayer(void) 
+{ 
+	return m_pCamera; 
+}
 bool Simplex::MyEntity::IsInitialized(void){ return m_bInMemory; }
 String Simplex::MyEntity::GetUniqueID(void) { return m_sUniqueID; }
 void Simplex::MyEntity::SetAxisVisible(bool a_bSetAxis) { m_bSetAxis = a_bSetAxis; }
+
 void Simplex::MyEntity::SetPosition(vector3 a_v3Position) { if(m_pSolver) m_pSolver->SetPosition(a_v3Position); }
 Simplex::vector3 Simplex::MyEntity::GetPosition(void)
 {
@@ -45,6 +54,7 @@ float Simplex::MyEntity::GetMass(void)
 		return m_pSolver->GetMass();
 	return 1.0f;
 }
+
 //  MyEntity
 void Simplex::MyEntity::Init(void)
 {

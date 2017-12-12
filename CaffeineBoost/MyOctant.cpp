@@ -102,6 +102,8 @@ void MyOctant::CreateTree(int depth)
 void Simplex::MyOctant::CheckForCollisions()
 {
 	int depth = 1;
+	m_pPlayerEntity = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("player"));
+
 	if (depth < m_depth) {
 		CheckForCollisions(depth);
 	}
@@ -118,7 +120,15 @@ void Simplex::MyOctant::CheckForCollisions(int depth)
 		if (m_vEntityList.size() > 0) {
 			for (int i = 0; i < m_vEntityList.size() - 1; i++) {
 				for (int j = i + 1; j < m_vEntityList.size(); j++) {
-					m_vEntityList[i]->IsColliding(m_vEntityList[j]);
+
+					// If the colliding object is the player, react accordingly
+					if (m_pPlayerEntity == m_vEntityList[i] && m_vEntityList[i]->IsColliding(m_vEntityList[j])) {
+						m_vEntityList[i]->GetPlayer()->collide(m_vEntityList[j]->GetRigidBody()->GetCenterGlobal());
+					}
+					// All non-player collisions
+					else if (m_vEntityList[i]->IsColliding(m_vEntityList[j])) {
+						m_vEntityList[i]->ResolveCollision(m_vEntityList[j]);
+					}
 				}
 			}
 		}

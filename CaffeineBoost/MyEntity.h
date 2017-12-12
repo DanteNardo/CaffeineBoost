@@ -6,6 +6,7 @@ Date: 2017/07
 #define __MYENTITY_H_
 
 #include "MySolver.h"
+#include "MyCamera.h"
 
 namespace Simplex
 {
@@ -31,6 +32,7 @@ class MyEntity
 	bool m_bUsePhysicsSolver = false; //Indicates if we will use a physics solver 
 
 	MySolver* m_pSolver = nullptr; //Physics MySolver
+	MyCamera* m_pCamera = nullptr; //Camera reference
 
 public:
 	/*
@@ -89,6 +91,18 @@ public:
 	OUTPUT: Rigid Body
 	*/
 	MyRigidBody* GetRigidBody(void);
+	/*
+	USAGE: Gets the camera pointer for a player entity.
+	ARGUMENTS: MyCamera pointer
+	OUTPUT: ---
+	*/
+	void SetPlayer(MyCamera* camera);
+	/*
+	USAGE: Gets the MyCamera pointer associated with this entity
+	ARGUMENTS: ---
+	OUTPUT: MyCamera
+	*/
+	MyCamera* GetPlayer(void);
 	/*
 	USAGE: Will reply to the question, is the MyEntity Initialized?
 	ARGUMENTS: ---

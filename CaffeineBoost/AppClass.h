@@ -12,6 +12,7 @@ Date: 2017/05
 
 #include "MyMeshManager.h"
 #include "ProceduralGeneration.h"
+#include "MyOctant.h"
 
 #include <SFML\Audio.hpp>
 
@@ -20,13 +21,15 @@ namespace Simplex
 
 class Application
 {
+	String m_sProgrammer = "Free Coffee Team"; // Programmer
+
 	MyCamera* m_pCamera = nullptr; // Camera class
 	MyMeshManager* m_pMyMeshMngr = nullptr; // My Mesh Manager
-	EntityManager* m_pMyEntityMngr = nullptr;
+	MyEntityManager* m_pMyEntityMngr = nullptr;
 
 
 	ProceduralGeneration* m_pGen = nullptr; // Procedural obstacle generator
-	String m_sProgrammer = "Free Coffee Team"; // Programmer
+	MyOctant* m_pRoot = nullptr; // Octree
 
 	//rigidbody for player 
 	RigidBody* m_pPlayer = nullptr;
@@ -42,7 +45,6 @@ class Application
 
 	std::vector<vector3> cubemap;
 	std::vector<vector3> playermap;
-	bool collisionReg;
 	bool entitiesRendered;
 
 	float prevZ;
