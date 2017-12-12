@@ -43,6 +43,9 @@ class Application
 	std::vector<vector3> cubemap;
 	std::vector<vector3> playermap;
 	bool collisionReg;
+	bool entitiesRendered;
+
+	float prevZ;
 
 	//vector to hold the strings for obstacles;
 	std::vector<std::string> obstacles;
@@ -122,15 +125,21 @@ public:
 	int getScore() {
 		return score;
 	}
-	void incrementScore(float dTime, float velocity) {
-		if (velocity < 0) {
+	void incrementScore(float dTime, float velocity, float z) {
 
+		//check position for score increment
+		//proceed -z, if we hit a obstacle, our position in that direction is never
+		//greater than the barrier position
 
-			score += dTime * 100 * -velocity;
+		if (prevZ < z) {
+			prevZ = z;
+
+			score += dTime * 100 * velocity;
 		}
 		else {
-			score += dTime * 100;
+			score -= dTime * 100 * -velocity;
 		}
+
 	}
 #pragma endregion
 

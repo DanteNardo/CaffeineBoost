@@ -246,7 +246,7 @@ void Simplex::MyCamera::slowDown()
 
 		acceleration -= speedDecrease;
 	}
-	if (acceleration < 3) {
+	if (acceleration <= 3) {
 		acceleration = 3;
 	}
 }

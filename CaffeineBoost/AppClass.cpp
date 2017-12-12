@@ -34,7 +34,6 @@ void Application::InitVariables(void)
 
 	m_pGen = new ProceduralGeneration();
 
-	m_pSteve = new Simplex::Model();
 	m_pTable = new Simplex::Model();
 	m_pChest = new Simplex::Model();
 	m_pCoffee = new Simplex::Model();
@@ -55,26 +54,29 @@ void Application::InitVariables(void)
 		vector3(0.5, 0.5, -0.5),
 		vector3(-0.5, 0.5, -0.5) };
 
-	playermap = { vector3(-0.25, -0.25, 0.25),
-		vector3(0.25, -0.25, 0.25),
-		vector3(0.25, 0.25, 0.25),
-		vector3(-0.25, 0.25, 0.25),
+	playermap = { vector3(-0.35, -0.35, 0.35),
+		vector3(0.35, -0.35, 0.35),
+		vector3(0.35, 0.35, 0.25),
+		vector3(-0.35, 0.35, 0.35),
 
-		vector3(-0.25, -0.25, -0.25),
-		vector3(0.25, -0.25, -0.25),
-		vector3(0.25, 0.25, -0.25),
-		vector3(-0.25, 0.25, -0.25) };
+		vector3(-0.35, -0.35, -0.35),
+		vector3(0.35, -0.35, -0.35),
+		vector3(0.35, 0.35, -0.35),
+		vector3(-0.35, 0.35, -0.35) };
 
-	m_pPlayer = new RigidBody(playermap);
-	m_pTable->GetVertexList();
+
+	m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", "player");
+
+	//test coffee cup
+	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
 
 	// init music
-	String filePath = m_pSystem->m_pFolder->GetFolderData();
+	/*String filePath = m_pSystem->m_pFolder->GetFolderData();
 	filePath += m_pSystem->m_pFolder->GetFolderAudio();
 	// file path is now set to the directory that holds audio files
 	m_soundBGM.openFromFile(filePath + "coffeerhythm.wav");
 	m_soundBGM.setLoop(true);
-	m_soundBGM.play();
+	m_soundBGM.play();*/
 
 	// sound effects
 	//m_soundBuffer.loadFromFile(filePath + "jump.wav");
@@ -92,24 +94,23 @@ void Application::Update(void)
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
-    incrementScore(fDelta, m_pCamera->GetPosition().z);
-#pragma region player rigid body updating
+    incrementScore(fDelta, m_pCamera->Velocity(), m_pCamera->GetPosition().z);
+
+#pragma region Player Updating
 
 	//get position for camera collisions
 	vector3 campos = m_pCamera->GetPosition();
 	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
 
-	m_pPlayer->SetModelMatrix(mPlayer);
+	m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
 
-#pragma endregion player rigid body updating
-
+#pragma endregion Player Updating
 
 	//Is the arcball active?
 	ArcBall();
 
 	//Is the first person camera active?
 	CameraRotation();
-
 
 	// Adds the procedurally generated world to the render list
 #pragma region Instantiating Batches
@@ -119,10 +120,6 @@ void Application::Update(void)
 
 	collisionReg = false;
 
-	for (int i = 0; i < obstacles.size(); i++) {
-		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10,-10,-10)), obstacles[i]);
-	}
-
 	// Spawn obstacles
 	while (obstacles.size() < (m_pGen->GetLength() / m_pGen->GetLengthBuffer()) * m_pGen->GetWidth() * 4) {
 
@@ -131,11 +128,16 @@ void Application::Update(void)
 		}
 		else {
 			m_pMyEntityMngr->AddEntity("Minecraft\\Table.obj", std::to_string(obstacles.size() + 1));
+
 		}
 		obstacles.push_back(std::to_string(obstacles.size() + 1));
 	}
 
-	//m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", std::to_string(45));
+	// set model matrix for (now) spawned entities
+	for (int i = 0; i < obstacles.size(); i++) {
+		//for now, we're setting way behind the player
+		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10,-10,-10)), obstacles[i]);
+	}
 	
 	int objectIndex = 0;
 
@@ -155,30 +157,18 @@ void Application::Update(void)
 					int y = k / m_pGen->GetWidth();
 					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					//build obstacle as a rigid body and check collisions against player
-					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
-
-					RigidBody* rigidObs = new RigidBody(cubemap); // m_pTable->GetVertexList());
-
-
-					rigidObs->SetModelMatrix(mObstacle);
-
 					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
 					//THIS LINE OF CODE SEEMINGLY DOES THE THING IT SHOULD
 					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z+10) - m_pCamera->GetPosition() ), objectIndex);
 					
-					objectIndex++;
-
-
 					//collision check
-					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
-
-						m_pCamera->collide(vector3(x * genToWorld, y * genToWorld, z));
+					if (!collisionReg && m_pMyEntityMngr->GetRigidBody("player")->IsColliding(m_pMyEntityMngr->GetRigidBody(objectIndex))) {
+						//m_pCamera->collide(vector3(x * genToWorld, y * genToWorld, z));
 						collisionReg = true;
 					}
 
-					rigidObs->~RigidBody();
+					objectIndex++;
 				}
 				// Spawn coffee whenever the array value is 2
 				else if (b->data[j][k] == 2) {
@@ -187,34 +177,19 @@ void Application::Update(void)
 					int y = k / m_pGen->GetWidth();
 					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					//build obstacle as a rigid body and check collisions against player
-					matrix4 mObstacle = glm::translate(vector3(x * genToWorld, y * genToWorld, z));
+					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
-					RigidBody* rigidObs = new RigidBody(cubemap);
-
-					rigidObs->SetModelMatrix(mObstacle);
-
-					m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
-
-					//m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), 0);
+					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), "coffee");
 
 					//objectIndex++;
 
-
 					//collision check
-					if (!collisionReg && m_pPlayer->IsColliding(rigidObs)) {
-
-						m_pCamera->coffeeCollide();
-
-						//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
+					if (!collisionReg && m_pMyEntityMngr->GetRigidBody("player")->IsColliding(m_pMyEntityMngr->GetRigidBody("coffee"))) {
+						
+						//m_pCamera->coffeeCollide();
 
 						collisionReg = true;
-
-
 					}
-
-					SafeDelete(rigidObs);
-
 				}
 			}
 		}
@@ -233,18 +208,17 @@ void Application::Update(void)
 #pragma endregion
 
 	//m_pMyEntityMngr->Update();
-
+	
 }
 void Application::Display(void)
 {
 	//Clear the screen
 	ClearScreen();
 
-
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
 
-	m_pMyEntityMngr->AddEntityToRenderList(-1, false);
+	m_pMyEntityMngr->AddEntityToRenderList(-1, true);
 
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
@@ -270,6 +244,8 @@ void Application::Release(void)
 
 	// Release the camera
 	SafeDelete(m_pCamera);
+
+	// Release the player
 	SafeDelete(m_pPlayer);
 
 	// Release the procedural generator
@@ -282,8 +258,8 @@ void Application::Release(void)
 	SafeDelete(m_pHallway);
 
 	// stop sounds
-	m_soundBGM.stop();
-	m_soundJump.stop();
+	//m_soundBGM.stop();
+	//m_soundJump.stop();
 	
 	//release GUI
 	ShutdownGUI();
