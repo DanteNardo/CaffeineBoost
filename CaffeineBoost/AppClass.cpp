@@ -70,6 +70,9 @@ void Application::InitVariables(void)
 	//test coffee cup
 	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
 
+
+	m_pMyEntityMngr->AddEntity("Minecraft\\Hallway.obj", "coffee");
+
 	// init music
 	/*String filePath = m_pSystem->m_pFolder->GetFolderData();
 	filePath += m_pSystem->m_pFolder->GetFolderAudio();
