@@ -15,7 +15,7 @@ void Application::InitVariables(void)
 
 	//Set the position and target of the camera
 	//(I'm at [0,0,10], looking at [0,0,0] and up is the positive Y axis)
-	m_pCameraMngr->SetPositionTargetAndUp(AXIS_Z * 10.0f, ZERO_V3, AXIS_Y);
+	m_pCameraMngr->SetPositionTargetAndUp(AXIS_Z * 1.0f, ZERO_V3, AXIS_Y);
 
 	//init the camera
 	m_pCamera = new MyCamera();
@@ -68,8 +68,11 @@ void Application::InitVariables(void)
 					vector3(0.35, 0.35, -0.35),
 					vector3(-0.35, 0.35, -0.35) };*/
 
+	vector3 camPos = vector3(0.0f, 1.0f, 20.0f);
 	m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", "player");
 	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->SetPlayer(m_pCamera);
+	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->SetModelMatrix(glm::translate(vector3(0, 0, 0)));
+	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->HidePlayer();
 
 	//test coffee cup
 	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
@@ -134,17 +137,13 @@ void Application::Update(void)
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
-    incrementScore(fDelta, m_pCamera->Velocity(), m_pCamera->GetPosition().z);
-
 	#pragma region Player Updating
-
-	//get position for camera collisions
-	vector3 campos = m_pCamera->GetPosition();
-	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
-
-	m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
-	
+	vector3 camPos = m_pCamera->GetPosition();
+	matrix4 mPlayer = glm::translate(vector3(camPos.x, camPos.y, camPos.z));
+	//m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
 	#pragma endregion
+
+    incrementScore(fDelta, m_pCamera->Velocity(), m_pCamera->GetPosition().z);
 
 	//Is the arcball active?
 	ArcBall();
@@ -158,7 +157,7 @@ void Application::Update(void)
 	float genToWorld = 1.0f;
 	Batch* b = &Batch();
 	
-	int objectIndex = 0;
+	int objectIndex = 1;
 
 	// Iterate through every 3D Batch (std::vector of Batch*)
 	for (int i = 0; i < m_pGen->GetBatches().size(); i++) {
@@ -176,10 +175,10 @@ void Application::Update(void)
 					int y = k / m_pGen->GetWidth();
 					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
-
-					//THIS LINE OF CODE SEEMINGLY DOES THE THING IT SHOULD
-					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z+10) - m_pCamera->GetPosition() ), objectIndex);
+					if (m_pMyEntityMngr->GetEntityIndex("player") == objectIndex) {
+						objectIndex++;
+					}
+					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), objectIndex);
 					objectIndex++;
 				}
 				// Spawn coffee whenever the array value is 2
@@ -188,8 +187,6 @@ void Application::Update(void)
 					int x = k % m_pGen->GetWidth();
 					int y = k / m_pGen->GetWidth();
 					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
-
-					//m_pMyMeshMngr->AddCubeToRenderList(mObstacle);
 
 					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), "coffee");
 				}
@@ -214,16 +211,15 @@ void Application::Update(void)
 	m_pRoot->CheckForCollisions();
 
 	//Hallways work endlessly
+	#pragma region Hallway Setup
 	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset+40) - m_pCamera->GetPosition()), "Hallway1");
 	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset-40) - m_pCamera->GetPosition()), "Hallway2");
-
-	float camPos = m_pCamera->GetPosition().z;
 	
-	if (abs(fmod(camPos, 80)) - abs(fmod(oldCameraPosition, 80)) < -20) {
+	if (abs(fmod(camPos.z, 80)) - abs(fmod(oldCameraPosition, 80)) < -20) {
 		hallwayOffset -= 80;
 	}
-	
-	oldCameraPosition = camPos;
+	oldCameraPosition = camPos.z;
+	#pragma endregion
 }
 void Application::Display(void)
 {

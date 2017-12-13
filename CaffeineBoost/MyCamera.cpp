@@ -317,6 +317,9 @@ void Simplex::MyCamera::collide(vector3 position)
 		if (velocity > -75) {
 			velocity = -75;
 		}
+		else if (velocity < -200) {
+			velocity = -200;
+		}
 		slowDown();
 	}
 }

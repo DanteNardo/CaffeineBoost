@@ -17,6 +17,7 @@ class MyEntity
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
+	bool m_bHidden = false; // Whether or not this entity should be invisible
 
 	uint m_nDimensionCount = 0; //tells how many dimensions this entity lives in
 	uint* m_DimensionArray = nullptr; //Dimensions on which this entity is located
@@ -103,6 +104,12 @@ public:
 	OUTPUT: MyCamera
 	*/
 	MyCamera* GetPlayer(void);
+	/*
+	USAGE: Hides the player entity's model
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+	void HidePlayer(void);
 	/*
 	USAGE: Will reply to the question, is the MyEntity Initialized?
 	ARGUMENTS: ---

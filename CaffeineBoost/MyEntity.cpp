@@ -27,6 +27,10 @@ MyCamera* Simplex::MyEntity::GetPlayer(void)
 { 
 	return m_pCamera; 
 }
+void Simplex::MyEntity::HidePlayer(void)
+{
+	m_bHidden = true;
+}
 bool Simplex::MyEntity::IsInitialized(void){ return m_bInMemory; }
 String Simplex::MyEntity::GetUniqueID(void) { return m_sUniqueID; }
 void Simplex::MyEntity::SetAxisVisible(bool a_bSetAxis) { m_bSetAxis = a_bSetAxis; }
@@ -150,14 +154,16 @@ void Simplex::MyEntity::AddToRenderList(bool a_bDrawRigidBody)
 		return;
 
 	//draw model
-	m_pModel->AddToRenderList();
-	
-	//draw rigid body
-	if(a_bDrawRigidBody)
-		m_pRigidBody->AddToRenderList();
+	if (!m_bHidden) {
+		m_pModel->AddToRenderList();
 
-	if (m_bSetAxis)
-		m_pMeshMngr->AddAxisToRenderList(m_m4ToWorld);
+		//draw rigid body
+		if (a_bDrawRigidBody)
+			m_pRigidBody->AddToRenderList();
+
+		if (m_bSetAxis)
+			m_pMeshMngr->AddAxisToRenderList(m_m4ToWorld);
+	}
 }
 MyEntity* Simplex::MyEntity::GetEntity(String a_sUniqueID)
 {
@@ -306,9 +312,6 @@ void Simplex::MyEntity::Update(void)
 	if (m_bUsePhysicsSolver) {
 		m_pSolver->Update();
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
-	}
-	if (m_pCamera != NULL) {
-		m_pRigidBody->SetModelMatrix(glm::translate(m_pCamera->GetPosition()));
 	}
 }
 void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)

@@ -122,15 +122,18 @@ void Simplex::MyOctant::CheckForCollisions(int depth)
 					// Ignore hallways
 					if (m_vEntityList[i]->GetUniqueID() == "Hallway1" ||
 						m_vEntityList[i]->GetUniqueID() == "Hallway2" ||
+						m_vEntityList[i]->GetUniqueID() == "coffee"   ||
 						m_vEntityList[j]->GetUniqueID() == "Hallway1" ||
-						m_vEntityList[j]->GetUniqueID() == "Hallway2") {
+						m_vEntityList[j]->GetUniqueID() == "Hallway2" ||
+						m_vEntityList[j]->GetUniqueID() == "coffee") {
 						continue;
 					}
 
 					// If the colliding object is the player, react accordingly
 					else if (m_vEntityList[i]->GetUniqueID() == "player" && 
 							 m_vEntityList[i]->IsColliding(m_vEntityList[j])) {
-						m_vEntityList[i]->GetPlayer()->collide(m_vEntityList[j]->GetRigidBody()->GetCenterGlobal());
+						vector3 objectCenter = m_vEntityList[j]->GetRigidBody()->GetCenterGlobal();
+						m_vEntityList[i]->GetPlayer()->collide(objectCenter);
 					}
 
 					// All other collisions
