@@ -191,9 +191,9 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 	}
 	else
 	{
-		m_m4Projection = glm::ortho(	m_v2Horizontal.x * fRatio, m_v2Horizontal.y * fRatio, //horizontal
-										m_v2Vertical.x, m_v2Vertical.y, //vertical
-										m_v2NearFar.x, m_v2NearFar.y); //near and far
+		m_m4Projection = glm::ortho(m_v2Horizontal.x * fRatio, m_v2Horizontal.y * fRatio, //horizontal
+									m_v2Vertical.x, m_v2Vertical.y, //vertical
+									m_v2NearFar.x, m_v2NearFar.y); //near and far
 	}
 }
 

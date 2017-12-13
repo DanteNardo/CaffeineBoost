@@ -279,10 +279,96 @@ void MyRigidBody::ClearCollidingList(void)
 }
 uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 {
-	// Since no separating axis found, the OBBs must be intersecting
-	/*
-	This is not complete as this is the solution of an assignment
-	*/
+	#pragma region PointsAndNormalsGeneration
+	// Generate points for computation
+	vector3 aPoints[8];
+	vector3 bPoints[8];
+	for (int i = 0; i < 8; i++) {
+		aPoints[i] = m_v3aPosition[i];
+		bPoints[i] = a_pOther->m_v3aPosition[i];
+	}
+
+	// NORMALS CALCULATION
+	std::vector<vector3> aNormals = std::vector<vector3>();
+	std::vector<vector3> bNormals = std::vector<vector3>();
+	aNormals.push_back(glm::normalize(vector3(m_m4ToWorld[0])));
+	aNormals.push_back(glm::normalize(vector3(m_m4ToWorld[1])));
+	aNormals.push_back(glm::normalize(vector3(m_m4ToWorld[2])));
+	bNormals.push_back(glm::normalize(vector3(a_pOther->GetModelMatrix()[0])));
+	bNormals.push_back(glm::normalize(vector3(a_pOther->GetModelMatrix()[1])));
+	bNormals.push_back(glm::normalize(vector3(a_pOther->GetModelMatrix()[2])));
+	#pragma endregion
+
+	// SAT TESTING
+	// SAT returns true if the maximum and minimum projections along an axis
+	// (where the axis is determined by the normals) are separated.
+	// ie the maximum projection of one is less than the minimum of another.
+
+	#pragma region SAT - A Normals
+	for (int i = 0; i < aNormals.size(); i++) {
+
+		// Minimum and maximum projections
+		// A = (this object) B = (a_pOther)
+		float projection;
+
+		// Projections for A - Instantiate aMin and aMax
+		float aMin = glm::dot(aPoints[0], aNormals[i]);
+		float aMax = aMin;
+		for (int j = 1; j < 8; j++) {
+			projection = glm::dot(aPoints[j], aNormals[i]);
+			aMin = (aMin > projection) ? projection : aMin;
+			aMax = (aMax < projection) ? projection : aMax;
+		}
+
+		// Projections for B - Instantiate bMin and bMax
+		float bMin = glm::dot(bPoints[0], aNormals[i]);
+		float bMax = bMin;
+		for (int k = 1; k < 8; k++) {
+			projection = glm::dot(bPoints[k], aNormals[i]);
+			bMin = (bMin > projection) ? projection : bMin;
+			bMax = (bMax < projection) ? projection : bMax;
+		}
+
+		// Check for separation
+		if (aMax < bMin || aMin > bMax) {
+			return 1;
+		}
+	}
+	#pragma endregion
+
+	#pragma region SAT - B Normals
+	for (int i = 0; i < bNormals.size(); i++) {
+
+		// Minimum and maximum projections
+		// A = (this object) B = (a_pOther)
+		float projection;
+
+		// Projections for A - Instantiate aMin and aMax
+		float aMin = glm::dot(aPoints[0], bNormals[i]);
+		float aMax = aMin;
+		for (int j = 1; j < 8; j++) {
+			projection = glm::dot(aPoints[j], bNormals[i]);
+			aMin = (aMin > projection) ? projection : aMin;
+			aMax = (aMax < projection) ? projection : aMax;
+		}
+
+		// Projections for B - Instantiate bMin and bMax
+		float bMin = glm::dot(bPoints[0], bNormals[i]);
+		float bMax = bMin;
+		for (int k = 1; k < 8; k++) {
+			projection = glm::dot(bPoints[k], bNormals[i]);
+			bMin = (bMin > projection) ? projection : bMin;
+			bMax = (bMax < projection) ? projection : bMax;
+		}
+
+		// Check for separation
+		if (aMax < bMin || aMin > bMax) {
+			return 1;
+		}
+	}
+	#pragma endregion
+
+	// There is no axis test that separates this two objects
 	return 0;
 }
 bool MyRigidBody::IsColliding(MyRigidBody* const other)
@@ -290,7 +376,8 @@ bool MyRigidBody::IsColliding(MyRigidBody* const other)
 	//check if spheres are colliding
 	bool bColliding = true;
 	//bColliding = (glm::distance(GetCenterGlobal(), other->GetCenterGlobal()) < m_fRadius + other->m_fRadius);
-	//if they are check the Axis Aligned Bounding Box
+	
+	// If they are check the Axis Aligned Bounding Box
 	if (bColliding) //they are colliding with bounding sphere
 	{
 		if (this->m_v3MaxG.x < other->m_v3MinG.x) //this to the right of other
@@ -319,14 +406,18 @@ bool MyRigidBody::IsColliding(MyRigidBody* const other)
 			other->RemoveCollisionWith(this);
 		}
 	}
-	else //they are not colliding with bounding sphere
+	// They are not colliding, so try SAT
+	else if (SAT(other) == 1)
 	{
+		this->AddCollisionWith(other);
+		other->AddCollisionWith(this);
+	}
+	else {
 		this->RemoveCollisionWith(other);
 		other->RemoveCollisionWith(this);
 	}
 	return bColliding;
 }
-
 void MyRigidBody::AddToRenderList(void)
 {
 	if (m_bVisibleBS)

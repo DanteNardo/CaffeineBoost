@@ -18,6 +18,7 @@ public:
 
 protected:
 	MeshManager* m_pMeshMngr = nullptr; //for displaying the Rigid Body
+	vector3 m_v3aPosition[8]; //Stores the corners of the obb
 
 	bool m_bVisibleBS = false; //Visibility of bounding sphere
 	bool m_bVisibleOBB = true; //Visibility of Oriented bounding box
