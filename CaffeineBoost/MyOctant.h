@@ -67,7 +67,6 @@ namespace Simplex
 		MyEntityManager* m_pEntityMngr = nullptr;
 		MeshManager* m_pMeshMngr = nullptr;
 		std::vector<MyEntity*> m_vEntityList;
-		MyEntity* m_pPlayerEntity = nullptr;
 
 		void Display(int depth);
 		void CreateTree(int depth);

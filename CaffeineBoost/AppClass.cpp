@@ -58,7 +58,7 @@ void Application::InitVariables(void)
 
 
 	// Initialize Player
-	playermap = {	vector3(-0.35, -0.35, 0.35),
+	/*playermap = {	vector3(-0.35, -0.35, 0.35),
 					vector3(0.35, -0.35, 0.35),
 					vector3(0.35, 0.35, 0.25),
 					vector3(-0.35, 0.35, 0.35),
@@ -66,7 +66,8 @@ void Application::InitVariables(void)
 					vector3(-0.35, -0.35, -0.35),
 					vector3(0.35, -0.35, -0.35),
 					vector3(0.35, 0.35, -0.35),
-					vector3(-0.35, 0.35, -0.35) };
+					vector3(-0.35, 0.35, -0.35) };*/
+
 	m_pMyEntityMngr->AddEntity("Minecraft\\Chest.obj", "player");
 	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->SetPlayer(m_pCamera);
 
@@ -111,21 +112,19 @@ void Application::InitVariables(void)
 	#pragma endregion
 
 	#pragma region Octree Generation
-	AABB* rootAABB = new AABB(vector3(-5, -5, 30), vector3(5, 5, -60));
-	m_pRoot = new MyOctant(4, rootAABB, m_pMyEntityMngr, m_pMeshMngr);
+	vector3 min;
+	vector3 max;
+	m_rootAABB = new AABB(min, max);
+	m_pRoot = new MyOctant(4, m_rootAABB, m_pMyEntityMngr, m_pMeshMngr);
 	m_pRoot->CreateTree();
 	m_pMyEntityMngr->Update();
 	m_pRoot->CheckForCollisions();
 	#pragma endregion
 
 	oldCameraPosition = m_pCamera->GetPosition().z;
-
 }
 void Application::Update(void)
 {
-	
-
-
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
@@ -214,9 +213,6 @@ void Application::Update(void)
 	m_pMyEntityMngr->Update();
 	m_pRoot->CheckForCollisions();
 
-	//m_pMyEntityMngr->Update();
-
-
 	//Hallways work endlessly
 	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset+40) - m_pCamera->GetPosition()), "Hallway1");
 	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset-40) - m_pCamera->GetPosition()), "Hallway2");
@@ -228,7 +224,6 @@ void Application::Update(void)
 	}
 	
 	oldCameraPosition = camPos;
-
 }
 void Application::Display(void)
 {
@@ -250,7 +245,7 @@ void Application::Display(void)
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
 	//clear the MyMeshManager list
-	m_pMyMeshMngr->ClearRenderList();
+	//m_pMyMeshMngr->ClearRenderList();
 
 	//draw gui
 	DrawGUI();
@@ -275,6 +270,7 @@ void Application::Release(void)
 
 	// Release the octree
 	SafeDelete(m_pRoot);
+	SafeDelete(m_rootAABB);
 
 	// Release the models
 	SafeDelete(m_pTable);

@@ -30,6 +30,7 @@ class Application
 
 	ProceduralGeneration* m_pGen = nullptr; // Procedural obstacle generator
 	MyOctant* m_pRoot = nullptr; // Octree
+	AABB* m_rootAABB = nullptr;
 
 	//rigidbody for player 
 	RigidBody* m_pPlayer = nullptr;
