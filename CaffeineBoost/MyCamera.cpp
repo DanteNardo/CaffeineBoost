@@ -205,10 +205,10 @@ void Simplex::MyCamera::moveForward(float deltaTime)
 	velocity = velocity * drag;
 
 	//moves camera position by velocity amount
-	SetPosition(m_v3Position + vector3(0, 0, -velocity * deltaTime));
+	//SetPosition(m_v3Position + vector3(0, 0, -velocity * deltaTime));
 
 	//moves target so camera doesn't turn
-	SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity* deltaTime)));
+	//SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity* deltaTime)));
 }
 
 void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)

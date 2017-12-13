@@ -45,7 +45,7 @@ void Application::InitVariables(void)
 	m_pCoffee->LoadOBJ("Minecraft\\CoffeeCup.obj");
 	m_pHallway->LoadOBJ("Minecraft\\HallwaySegment.obj");
 
-	cubemap = { vector3(-0.5, -0.5, 0.5),
+	/*cubemap = { vector3(-0.5, -0.5, 0.5),
 				vector3(0.5, -0.5, 0.5),
 				vector3(0.5, 0.5, 0.5),
 				vector3(-0.5, 0.5, 0.5),
@@ -53,7 +53,7 @@ void Application::InitVariables(void)
 				vector3(-0.5, -0.5, -0.5),
 				vector3(0.5, -0.5, -0.5),
 				vector3(0.5, 0.5, -0.5),
-				vector3(-0.5, 0.5, -0.5) };
+				vector3(-0.5, 0.5, -0.5) };*/
 
 
 
@@ -133,7 +133,6 @@ void Application::Update(void)
 
 	float fDelta = m_pSystem->GetDeltaTime(clockMove);
 
-	//comment to disable automatic movement for testing
 	m_pCamera->moveForward(fDelta);
 	m_pCamera->fall(fDelta);
 
@@ -178,7 +177,8 @@ void Application::Update(void)
 					if (m_pMyEntityMngr->GetEntityIndex("player") == objectIndex) {
 						objectIndex++;
 					}
-					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), objectIndex);
+					m_pMyEntityMngr->SetModelMatrix(glm::translate((vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()) - vector3(0, 0, -m_pCamera->Velocity()*fDelta)), objectIndex);
+					
 					objectIndex++;
 				}
 				// Spawn coffee whenever the array value is 2
