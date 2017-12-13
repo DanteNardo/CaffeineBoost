@@ -59,6 +59,9 @@ class Application
 	sf::Sound m_soundJump;
 	// sound buffer
 	sf::SoundBuffer m_soundBuffer;
+
+
+
 private:
 	static ImGuiObject gui; //GUI object
 	int score = 0;
@@ -80,6 +83,10 @@ private:
 	Simplex::CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
+
+	int hallwayOffset = 0; //used to keep the hallways looping.
+	float oldCameraPosition;
+
 
 public:
 #pragma region Constructor / Run / Destructor

@@ -6,6 +6,7 @@ int score = 0;
 unsigned int clockMove;
 void Application::InitVariables(void)
 {
+	hallwayOffset = 0;
 	////Change this to your name and email
 	//m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
 
@@ -23,7 +24,7 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 19.0f), //where what I'm looking at is
 		AXIS_Y);					//what is up
 	
-
+	m_v4ClearColor = vector4(0.380, 0.3411, 0.2823, 1.0);
 	//Get the singleton
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
@@ -73,7 +74,8 @@ void Application::InitVariables(void)
 	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
 
 
-	m_pMyEntityMngr->AddEntity("Minecraft\\Hallway.obj", "coffee");
+	m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "Hallway1");
+	m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "Hallway2");
 
 	// init music
 	/*String filePath = m_pSystem->m_pFolder->GetFolderData();
@@ -115,9 +117,15 @@ void Application::InitVariables(void)
 	m_pMyEntityMngr->Update();
 	m_pRoot->CheckForCollisions();
 	#pragma endregion
+
+	oldCameraPosition = m_pCamera->GetPosition().z;
+
 }
 void Application::Update(void)
 {
+	
+
+
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
@@ -136,7 +144,7 @@ void Application::Update(void)
 	matrix4 mPlayer = glm::translate(vector3(campos.x, campos.y - 1, campos.z));
 
 	m_pMyEntityMngr->SetModelMatrix(mPlayer, "player");
-
+	
 	#pragma endregion
 
 	//Is the arcball active?
@@ -207,6 +215,20 @@ void Application::Update(void)
 	m_pRoot->CheckForCollisions();
 
 	//m_pMyEntityMngr->Update();
+
+
+	//Hallways work endlessly
+	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset+40) - m_pCamera->GetPosition()), "Hallway1");
+	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset-40) - m_pCamera->GetPosition()), "Hallway2");
+
+	float camPos = m_pCamera->GetPosition().z;
+	
+	if (abs(fmod(camPos, 80)) - abs(fmod(oldCameraPosition, 80)) < -20) {
+		hallwayOffset -= 80;
+	}
+	
+	oldCameraPosition = camPos;
+
 }
 void Application::Display(void)
 {
