@@ -26,8 +26,8 @@ void Application::InitVariables(void)
 	
 	m_v4ClearColor = vector4(0.380, 0.3411, 0.2823, 1.0);
 	//Get the singleton
-	m_pMyMeshMngr = MyMeshManager::GetInstance();
-	m_pMyMeshMngr->SetCamera(m_pCamera);
+	//m_pMeshMngr = MeshManager::GetInstance();
+	//m_pMeshMngr->SetCamera(m_pCamera);
 
 	m_pMyEntityMngr = MyEntityManager::GetInstance();
 
@@ -75,19 +75,19 @@ void Application::InitVariables(void)
 	m_pMyEntityMngr->GetEntity(m_pMyEntityMngr->GetEntityIndex("player"))->HidePlayer();
 
 	//test coffee cup
-	m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
+	//m_pMyEntityMngr->AddEntity("Minecraft\\CoffeeCup.obj", "coffee");
 
 
 	m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "Hallway1");
 	m_pMyEntityMngr->AddEntity("Minecraft\\HallwaySegment.obj", "Hallway2");
 
 	// init music
-	/*String filePath = m_pSystem->m_pFolder->GetFolderData();
+	String filePath = m_pSystem->m_pFolder->GetFolderData();
 	filePath += m_pSystem->m_pFolder->GetFolderAudio();
 	// file path is now set to the directory that holds audio files
 	m_soundBGM.openFromFile(filePath + "coffeerhythm.wav");
 	m_soundBGM.setLoop(true);
-	m_soundBGM.play();*/
+	m_soundBGM.play();
 
 	// sound effects
 	//m_soundBuffer.loadFromFile(filePath + "jump.wav");
@@ -104,13 +104,14 @@ void Application::InitVariables(void)
 			m_pMyEntityMngr->AddEntity("Minecraft\\Table.obj", std::to_string(obstacles.size() + 1));
 
 		}
-		obstacles.push_back(std::to_string(obstacles.size() + 1));
+		obstacles.push_back(std::to_string(obstacles.size() + 1));		
 	}
 
 	// set model matrix for (now) spawned entities
 	for (int i = 0; i < obstacles.size(); i++) {
 		//for now, we're setting way behind the player
 		m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(-10, -10, -10)), obstacles[i]);
+		//m_pMyEntityMngr->SetAxisVisibility(true);
 	}
 	#pragma endregion
 
@@ -177,19 +178,22 @@ void Application::Update(void)
 					if (m_pMyEntityMngr->GetEntityIndex("player") == objectIndex) {
 						objectIndex++;
 					}
-					m_pMyEntityMngr->SetModelMatrix(glm::translate((vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()) - vector3(0, 0, -m_pCamera->Velocity()*fDelta)), objectIndex);
-					
+
+					matrix4 lastMatrix = m_pMyEntityMngr->GetModelMatrix(objectIndex);// get the model matrix of the last added
+					lastMatrix = glm::translate((vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()) - vector3(0, 0, (-m_pCamera->Velocity())*fDelta)); //translate it
+					m_pMyEntityMngr->SetModelMatrix(lastMatrix, objectIndex); //return it to its owner
+
 					objectIndex++;
 				}
 				// Spawn coffee whenever the array value is 2
-				else if (b->data[j][k] == 2) {
+				/*else if (b->data[j][k] == 2) {
 
 					int x = k % m_pGen->GetWidth();
 					int y = k / m_pGen->GetWidth();
 					int z = -(j + ((i + m_iBatchIterations - 1) * m_pGen->GetLength()));
 
-					m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()), "coffee");
-				}
+					m_pMyEntityMngr->SetModelMatrix(glm::translate((vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()) - vector3(0, 0, -m_pCamera->Velocity()*fDelta)), "coffee");
+				}*/
 			}
 		}
 	}
@@ -210,6 +214,8 @@ void Application::Update(void)
 	m_pMyEntityMngr->Update();
 	m_pRoot->CheckForCollisions();
 
+
+
 	//Hallways work endlessly
 	#pragma region Hallway Setup
 	m_pMyEntityMngr->SetModelMatrix(glm::translate(vector3(2, 0, hallwayOffset+40) - m_pCamera->GetPosition()), "Hallway1");
@@ -220,25 +226,27 @@ void Application::Update(void)
 	}
 	oldCameraPosition = camPos.z;
 	#pragma endregion
+
+	m_pMyEntityMngr->AddEntityToRenderList(-1, true);
 }
 void Application::Display(void)
 {
 	//Clear the screen
 	ClearScreen();
 
-	//clear the render list
-	m_pMeshMngr->ClearRenderList();
-
-	m_pMyEntityMngr->AddEntityToRenderList(-1, true);
-
 	// Display the Octree
 	m_pRoot->Display();
 
 	//Render the list of MyMeshManager
-	m_pMyMeshMngr->Render();
+	//m_pMyMeshMngr->Render();
+
+	
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
+
+	//clear the render list
+	m_pMeshMngr->ClearRenderList();
 
 	//clear the MyMeshManager list
 	//m_pMyMeshMngr->ClearRenderList();
@@ -252,7 +260,7 @@ void Application::Display(void)
 void Application::Release(void)
 {
 	// Release the singleton
-	MyMeshManager::ReleaseInstance();
+	//MyMeshManager::ReleaseInstance();
 	EntityManager::ReleaseInstance();
 
 	// Release the camera
@@ -275,7 +283,7 @@ void Application::Release(void)
 	SafeDelete(m_pHallway);
 
 	// stop sounds
-	//m_soundBGM.stop();
+	m_soundBGM.stop();
 	//m_soundJump.stop();
 	
 	//release GUI

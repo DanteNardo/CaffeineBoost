@@ -24,7 +24,6 @@ class Application
 	String m_sProgrammer = "Free Coffee Team"; // Programmer
 
 	MyCamera* m_pCamera = nullptr; // Camera class
-	MyMeshManager* m_pMyMeshMngr = nullptr; // My Mesh Manager
 	MyEntityManager* m_pMyEntityMngr = nullptr;
 
 

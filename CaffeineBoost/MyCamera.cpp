@@ -208,7 +208,7 @@ void Simplex::MyCamera::moveForward(float deltaTime)
 	//SetPosition(m_v3Position + vector3(0, 0, -velocity * deltaTime));
 
 	//moves target so camera doesn't turn
-	//SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity* deltaTime)));
+	SetTarget(vector3(m_v3Target.x , m_v3Target.y, m_v3Target.z - (velocity* deltaTime)));
 }
 
 void Simplex::MyCamera::moveSideways(bool direction, float deltaTime)
@@ -274,8 +274,10 @@ void Simplex::MyCamera::jump()
 void Simplex::MyCamera::fall(float deltaTime)
 {
  	SetPosition(vector3(m_v3Position.x, m_v3Position.y + verticalVelocity, m_v3Position.z));
+
 	//moves target so camera doesn't turn
 	SetTarget(vector3(m_v3Target.x, m_v3Position.y, m_v3Target.z));
+
 	verticalVelocity = verticalVelocity - (1.0f * deltaTime);
 	if (m_v3Position.y < 1) {
 		SetPosition(vector3(m_v3Position.x, 1, m_v3Position.z));
