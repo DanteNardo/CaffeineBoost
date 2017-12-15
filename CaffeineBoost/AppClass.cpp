@@ -90,8 +90,8 @@ void Application::InitVariables(void)
 	m_soundBGM.play();
 
 	// sound effects
-	//m_soundBuffer.loadFromFile(filePath + "jump.wav");
-	//m_soundJump.setBuffer(m_soundBuffer);
+	m_soundBuffer.loadFromFile(filePath + "jump2.wav");
+	m_soundJump.setBuffer(m_soundBuffer);
 
 	#pragma region Obstacle Generation
 	// Spawn obstacles
@@ -180,7 +180,8 @@ void Application::Update(void)
 					}
 
 					matrix4 lastMatrix = m_pMyEntityMngr->GetModelMatrix(objectIndex);// get the model matrix of the last added
-					lastMatrix = glm::translate((vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition()) - vector3(0, 0, (-m_pCamera->Velocity())*fDelta)); //translate it
+					vector3 baseVector = vector3(x * genToWorld, y * genToWorld, z + 10) - m_pCamera->GetPosition();
+					lastMatrix = glm::translate(IDENTITY_M4, (baseVector - vector3(0, 0, 10*fDelta))); //translate it
 					m_pMyEntityMngr->SetModelMatrix(lastMatrix, objectIndex); //return it to its owner
 
 					objectIndex++;
